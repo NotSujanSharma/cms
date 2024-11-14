@@ -31,8 +31,9 @@ Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
-    // get users with order by value /users?order_by=created_at or /users?order_by=name 
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::post('/users/{user}', [AdminController::class, 'update'])->name('users.update');
+    Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
 
 
 });

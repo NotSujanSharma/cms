@@ -33,6 +33,21 @@ class AdminController extends Controller
     {
         $users = User::all();
         $page = 'users';
+        
         return view('admin.users', compact('users','page'));
+    }
+
+    public function update(Request $request, User $user)
+    {
+        
+        $user->update($request->all());
+        return response()->json(['success' => true]);
+        
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+        return response()->json(['success' => true]);
     }
 }
