@@ -46,6 +46,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::post('/clubs/{club}/leave', [UserController::class, 'leaveClub'])->name('club.leave');
     Route::post('/events/{event}/join', [UserController::class, 'joinEvent'])->name('event.join');
     Route::post('/events/{event}/leave', [UserController::class, 'leaveEvent'])->name('event.leave');
+    Route::get('/edit-profile', [UserController::class, 'editProfile'])->name('user.edit');
+    Route::post('/update-profile', [UserController::class, 'updateProfile'])->name('user.update');
 });
 
 Route::post('/logout', function () {

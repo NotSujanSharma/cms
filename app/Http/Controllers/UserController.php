@@ -114,4 +114,18 @@ class UserController extends Controller
         
         return back()->with('error', 'You are not a member of this event.');
     }
+
+    public function editProfile()
+    {
+        $page = 'edit-profile';
+        $user = Auth::user();
+        return view('user.edit-profile', compact('user','page'));
+    }
+
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        $user->update($request->all());
+        return back()->with('success', 'Profile updated successfully!');
+    }
 }

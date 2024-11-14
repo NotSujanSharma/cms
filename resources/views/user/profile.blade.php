@@ -16,11 +16,10 @@
                 <p>{{ session('error') }}</p>
             </div>
             @endif
-            <!-- Popular Clubs -->
             <div class="mb-8">
                 <h2 class="text-xl font-bold mb-4">{{$user->name}}</h2>
 
-                <a href="" class="bg-blue-100 py-3 p-3 rounded-lg hover:bg-blue-300 transition duration-300">
+                <a href="{{route('user.edit')}}" class="bg-blue-100 py-3 p-3 rounded-lg hover:bg-blue-300 transition duration-300">
                     Edit Profile
                 </a>
                 
@@ -51,7 +50,6 @@
         
         </div>
 
-        <!-- Right Sidebar -->
         <div class="w-64 p-6 bg-gray-100 overflow-auto">
             
             @if($user->events->count() > 0)

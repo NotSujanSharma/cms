@@ -25,7 +25,7 @@ class AuthController extends Controller
             }
         }
 
-        return back()->withErrors(['message' => 'Invalid credentials']);
+        return back()->with('error', 'Invalid credentials');
     }
 
     public function showLoginForm()
