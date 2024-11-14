@@ -6,6 +6,8 @@
     <title>@yield('title', 'CMS')</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+
+    @yield('extra_head', '')
 </head>
 <body class="bg-purple-100 p-4">
     <div class="max-w-7xl mx-auto bg-white rounded-3xl h-[95vh] flex overflow-hidden shadow-xl">
@@ -21,7 +23,7 @@
                     <i class="fas fa-user"></i>
                     <span>Profile</span>
                 </a>
-                <a href="#" id="calendar" class="flex items-center space-x-3 p-3">
+                <a href="{{ route('user.calendar')  }}" id="user_calendar" class="flex items-center space-x-3 p-3">
                     <i class="fas fa-calendar"></i>
                     <span>Schedule</span>
                 </a>

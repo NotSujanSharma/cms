@@ -42,6 +42,8 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::get('news', [UserController::class, 'news'])->name('user.news');
     Route::get('/clubs/{club_id}', [UserController::class, 'club'])->name('club.show');
+    Route::get('/calendar', [UserController::class, 'calendar'])->name('user.calendar');
+    
     Route::post('/clubs/{club}/join', [UserController::class, 'joinClub'])->name('club.join');
     Route::post('/clubs/{club}/leave', [UserController::class, 'leaveClub'])->name('club.leave');
     Route::post('/events/{event}/join', [UserController::class, 'joinEvent'])->name('event.join');

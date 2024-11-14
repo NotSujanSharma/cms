@@ -50,6 +50,15 @@ class UserController extends Controller
         return view('user.news', compact('clubs','page','joined_events'));
     }
 
+    public function calendar()
+    {
+        $page = 'user_calendar';
+        $events = Event::all();
+        $joined_events = Auth::user()->events->pluck('id')->toArray();
+        $user_events = Event::whereIn('id', $joined_events)->get();
+        return view('user.calendar', compact('events','page','user_events'));
+    }
+
     
     public function club($club_id)
     {
