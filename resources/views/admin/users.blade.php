@@ -11,50 +11,13 @@
     userToDelete: null,
     
     updateUser() {
-        const formData = new FormData();
-        formData.append('user_id', this.userId);
-        formData.append('name', this.userName);
-        formData.append('email', this.userEmail);
-        formData.append('role', this.userRole);
-        formData.append('_token', '{{ csrf_token() }}');
-
-        fetch(`/users/${this.userId}`, {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.reload();
-            } else {
-                alert('Error updating user');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error updating user');
-        });
+        document.getElementById('updateForm').action = `/update/${this.userId}`;
+        document.getElementById('updateForm').submit();
     },
     
     deleteUser() {
-        fetch(`/users/${this.userToDelete}`, {
-            method: 'DELETE',
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.reload();
-            } else {
-                alert('Error deleting user');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error deleting user');
-        });
+       document.getElementById('deleteForm').action = `/delete/${this.userToDelete}`;
+        document.getElementById('deleteForm').submit();
     }
 }">
     <div class="flex flex-col">
@@ -173,8 +136,9 @@
                         </button>
                     </div>
                     
-                    <form @submit.prevent="updateUser()">
+                    <form  method="POST" action=""  @submit.prevent="updateUser()" id="updateForm">
                         @csrf
+                        @method('POST')
                         <input type="hidden" name="user_id" x-model="userId">
                         <div class="space-y-4">
                             <div>
@@ -249,9 +213,9 @@
                                 class="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-50">
                             Cancel
                         </button>
-                        <form @submit.prevent="deleteUser()" class="inline">
+                        <form method="post" action="" @submit.prevent="deleteUser()" id="deleteForm" class="inline">
                             @csrf
-                            @method('DELETE')
+                            @method('post')
                             <input type="hidden" name="user_id" x-model="userToDelete">
                             <button type="submit" 
                                     class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
@@ -264,4 +228,6 @@
         </div>
     </div>
 </div>
+
+
 @endsection

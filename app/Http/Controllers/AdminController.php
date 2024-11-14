@@ -23,10 +23,11 @@ class AdminController extends Controller
             'most_active_users' => $most_active_users
         ];
         //active clubs with number of events and number of members
+        $all_clubs = Club::all();
         $active_clubs = Club::withCount('events', 'users')->orderBy('events_count', 'desc')->take(3)->get();
 
         $page="admin_dashboard";
-        return view('admin.dashboard' , compact('page','users','active_clubs'));
+        return view('admin.dashboard' , compact('page','users','active_clubs','all_clubs'));
     }
 
     public function users()
@@ -41,13 +42,13 @@ class AdminController extends Controller
     {
         
         $user->update($request->all());
-        return response()->json(['success' => true]);
+        return back()->with('success', 'User updated successfully');
         
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-        return response()->json(['success' => true]);
+        return back()->with('success', 'User deleted successfully');
     }
 }
