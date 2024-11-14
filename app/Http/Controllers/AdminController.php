@@ -6,10 +6,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Club;
+use App\Models\Event;
 
 class AdminController extends Controller
 {
-    // AdminController.php
     public function index()
     {
         $m_users = User::all();
@@ -22,7 +22,6 @@ class AdminController extends Controller
             'new_users' => $new_users,
             'most_active_users' => $most_active_users
         ];
-        //active clubs with number of events and number of members
         $all_clubs = Club::all();
         $active_clubs = Club::withCount('events', 'users')->orderBy('events_count', 'desc')->take(3)->get();
 
@@ -50,5 +49,13 @@ class AdminController extends Controller
     {
         $user->delete();
         return back()->with('success', 'User deleted successfully');
+    }
+
+    public function createEvent(Request $request)
+    {
+        $event = new Event();
+        $event->fill($request->all());
+        $event->save();
+        return back()->with('success', 'Event created successfully');
     }
 }

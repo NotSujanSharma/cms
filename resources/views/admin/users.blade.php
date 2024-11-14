@@ -19,7 +19,7 @@
        document.getElementById('deleteForm').action = `/delete/${this.userToDelete}`;
         document.getElementById('deleteForm').submit();
     }
-}">
+}" x-cloak>
     <div class="flex flex-col">
         @if(session('success'))
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-2" role="alert">
@@ -108,11 +108,13 @@
             </tbody>
         </table>
     </div>
-    <div 
+    <div x-cloak
          x-on:keydown.escape.prevent.stop="showEditModal = false"
-         class="relative z-50">
+         class="relative z-50"
+         x-show="showEditModal">
         
         <div x-show="showEditModal" 
+             x-cloak
              class="fixed inset-0 bg-black/50" 
              aria-hidden="true"
              x-transition:enter="transition ease-out duration-300"
@@ -123,6 +125,7 @@
              x-transition:leave-end="opacity-0"></div>
     
         <div x-show="showEditModal" 
+            x-cloak
              class="fixed inset-0 z-50 overflow-y-auto">
             <div class="min-h-screen px-4 flex items-center justify-center">
                 <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md"
@@ -178,11 +181,13 @@
         </div>
     </div>
     
-    <div
+    <div x-cloak
          x-on:keydown.escape.prevent.stop="showDeleteModal = false"
-         class="relative z-50">
+         class="relative z-50"
+         x-show="showDeleteModal">
         
-        <div x-show="showDeleteModal" 
+        <div x-show="showDeleteModal"
+             x-cloak 
              class="fixed inset-0 bg-black/50" 
              aria-hidden="true"
              x-transition:enter="transition ease-out duration-300"
@@ -193,6 +198,7 @@
              x-transition:leave-end="opacity-0"></div>
     
         <div x-show="showDeleteModal" 
+                x-cloak
              class="fixed inset-0 z-50 overflow-y-auto">
             <div class="min-h-screen px-4 flex items-center justify-center">
                 <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md"

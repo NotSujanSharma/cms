@@ -3,21 +3,31 @@
     @section('content')
    <div class="flex flex-1 flex-row" x-data="{ 
     showCreateModal: false, 
-    userId: null, 
     eventName: '', 
     eventDescription: '', 
     eventDate: '',
-    userToDelete: null,
+    clubId: '',
     
     createEvent() {
-        document.getElementById('createEventFom').action = `/update/${this.userId}`;
+        document.getElementById('createEventFom').action = `/create-event`;
         document.getElementById('createEventFom').submit();
     },
     
     
-}">
-        <!-- Main Content -->
+}" x-cloak>
         <div class="flex p-4 w-full flex-col">
+            @if(session('success'))
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-2" role="alert">
+                <p class="font-bold">Success</p>
+                <p>{{ session('success') }}</p>
+            </div>
+            @endif
+            @if(session('error'))
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-2" role="alert">
+                <p class="font-bold">Error</p>
+                <p>{{ session('error') }}</p>
+            </div>
+            @endif
             <div class="flex items-center mb-6">
                 <h2 class="text-3xl font-bold">Dashboard</h2>
                 
@@ -147,7 +157,7 @@
                 </div>
                 <div class="flex flex-row gap-1" >
                     <button class="bg-[#B4CD93] w-max text-sm px-3 py-2 rounded-lg" @click="showCreateModal = true; ">Create Events</button>
-                    <button class="bg-[#B4CD93] w-max text-sm px-3 py-2 rounded-lg">Manage Users</button>
+                    <button onClick="window.location.href='{{route('admin.users')}}'" class="bg-[#B4CD93] w-max text-sm px-3 py-2 rounded-lg">Manage Users</button>
                 </div>
             </div>
             <div class="bg-white rounded-md shadow-md shadow-gray-500/30 p-4 mb-6">   
@@ -164,7 +174,7 @@
                     </div>
                     @endforeach
                 </div>
-                <button class="bg-[#B4CD93] w-full px-4 py-2 rounded-lg mt-4">View all users</button>
+                <button onClick="window.location.href='{{route('admin.users')}}'" class="bg-[#B4CD93] w-full px-4 py-2 rounded-lg mt-4">View all users</button>
             </div>
 
             <div class="bg-white rounded-md shadow-md shadow-gray-500/30 p-4">
@@ -197,10 +207,14 @@
             </div>
         </div>
         <div 
+         x-cloak
          x-on:keydown.escape.prevent.stop="showCreateModal = false"
-         class="relative z-50">
+         class="relative z-50"
+        x-show="showCreateModal"
+         >
         
-        <div x-show="showCreateModal" 
+        <div x-show="showCreateModal"
+            x-cloak 
              class="fixed inset-0 bg-black/50" 
              aria-hidden="true"
              x-transition:enter="transition ease-out duration-300"
@@ -211,6 +225,7 @@
              x-transition:leave-end="opacity-0"></div>
     
         <div x-show="showCreateModal" 
+                x-cloak
              class="fixed inset-0 z-50 overflow-y-auto">
             <div class="min-h-screen px-4 flex items-center justify-center">
                 <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md"
@@ -252,7 +267,7 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Date</label>
-                                <input type="date" x-model="eventDate" name="date" 
+                                <input type="date" x-model="eventDate" name="event_date" 
                                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                                     
                             </div>

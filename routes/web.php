@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
@@ -34,6 +33,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::post('/update/{user}', [AdminController::class, 'update'])->name('users.update');
     Route::post('/delete/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
+    Route::post('/create-event', [AdminController::class, 'createEvent'])->name('event.create');
 
 
 });

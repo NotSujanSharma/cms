@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -9,17 +8,15 @@ use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
-    //
-    // UserController.php
     public function index()
     {
         $page = 'home';
         $clubs = Club::with(['events' => function($query) {
             $query->orderBy('event_date', 'desc')
-                  ->take(3); // Get latest 3 events
+                  ->take(3);
         }, 'news' => function($query) {
             $query->orderBy('date', 'desc')
-                  ->take(3); // Get latest 3 news items
+                  ->take(3); 
         }])->get();
 
         $joined_clubs = Auth::user()->clubs->pluck('id')->toArray();
@@ -31,7 +28,6 @@ class UserController extends Controller
     {
         $page = 'profile';
         $user = Auth::user();
-        // clubs user have joined, and events user have joined
         $user->load('clubs', 'events');
         return view('user.profile', compact('user','page'));
     }
@@ -40,10 +36,10 @@ class UserController extends Controller
         $page = 'news';
         $clubs = Club::with(['events' => function($query) {
             $query->orderBy('event_date', 'desc')
-                  ->take(3); // Get latest 3 events
+                  ->take(3); 
         }, 'news' => function($query) {
             $query->orderBy('date', 'desc')
-                  ->take(3); // Get latest 3 news items
+                  ->take(3);
         }])->get();
 
         $joined_events = Auth::user()->events->pluck('id')->toArray();
@@ -55,7 +51,8 @@ class UserController extends Controller
         $page = 'user_calendar';
         $events = Event::all();
         $joined_events = Auth::user()->events->pluck('id')->toArray();
-        $user_events = Event::whereIn('id', $joined_events)->get();
+        $user_events=$events;
+        // $user_events = Event::whereIn('id', $joined_events)->get();
         return view('user.calendar', compact('events','page','user_events'));
     }
 
@@ -65,10 +62,10 @@ class UserController extends Controller
         $page = 'club';
         $club = Club::with(['events' => function($query) {
             $query->orderBy('event_date', 'desc')
-                  ->take(3); // Get latest 3 events
+                  ->take(3);
         }, 'news' => function($query) {
             $query->orderBy('date', 'desc')
-                  ->take(3); // Get latest 3 news items
+                  ->take(3); 
         }])->find($club_id);
         $is_member = Auth::user()->clubs->contains($club_id);
         $joined_events = Auth::user()->events->pluck('id')->toArray();

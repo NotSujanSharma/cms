@@ -2,7 +2,7 @@
 @section('title', 'Profile')
 @section('content')
         <!-- Main Content -->
-         <div class="flex flex-row">
+         <div class="flex flex-row w-full">
              <div class="flex-1 p-8 overflow-auto">
             @if(session('success'))
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-2" role="alert">
