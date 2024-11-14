@@ -31,6 +31,10 @@ Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+    // get users with order by value /users?order_by=created_at or /users?order_by=name 
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+
+
 });
 
 Route::middleware(['auth', 'role:subadmin'])->group(function () {

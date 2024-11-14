@@ -19,6 +19,13 @@
                 <h2 class="text-xl font-bold mb-4">Edit Profile</h2>
                 <form method="POST" action="{{ route('user.update', $user->id) }}" class="space-y-6">
                     @csrf
+                    <!-- <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Profile Image</label>
+                        <input 
+                            type="file" 
+                            name="image"
+                            class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div> -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">Name</label>
                         <input 

@@ -17,9 +17,18 @@
             </div>
             @endif
             <div class="mb-8">
-                <h2 class="text-xl font-bold mb-4">{{$user->name}}</h2>
-
-                <a href="{{route('user.edit')}}" class="bg-blue-100 py-3 p-3 rounded-lg hover:bg-blue-300 transition duration-300">
+                <!-- image -->
+                 <div class="flex flex-row items-center gap-3 mb-5">
+                    <div class="w-32 h-32 rounded-full bg-gray-300 overflow-hidden">
+                        @if(($user->image_path) &&($user->image_path != "null"))
+                        <img src="{{ $user->image_path }}" alt="Profile Image" class="w-full h-full  object-cover">
+                        @else
+                        <img src="https://atg-prod-scalar.s3.amazonaws.com/studentpower/media/user%20avatar.png" alt="Profile Image" class="w-full h-full  object-cover">
+                        @endif
+                    </div>
+                    <h2 class="text-3xl font-bold mb-4">{{$user->name}}</h2>
+                </div>
+                <a href="{{route('user.edit')}}" class="bg-blue-100 py-3 mx-3 p-3 rounded-lg hover:bg-blue-300 transition duration-300">
                     Edit Profile
                 </a>
                 
