@@ -51,11 +51,44 @@ class AdminController extends Controller
         return back()->with('success', 'User deleted successfully');
     }
 
+    public function events()
+    {
+        $events = Event::all();
+        $clubs = Club::all();
+        $page = 'events';
+        return view('admin.events', compact('events','page','clubs'));
+    }
+
+
+
     public function createEvent(Request $request)
     {
+
+        // dd($request->all());
         $event = new Event();
+
         $event->fill($request->all());
         $event->save();
         return back()->with('success', 'Event created successfully');
+    }
+
+    public function destroyEvent(Event $event)
+    {
+        $event->delete();
+        return back()->with('success', 'Event deleted successfully');
+    }
+
+    public function updateEvent(Request $request, Event $event)
+    {
+        $event->update($request->all());
+        return back()->with('success', 'Event updated successfully');
+    }
+
+    public function createUser(Request $request)
+    {
+        $user = new User();
+        $user->fill($request->all());
+        $user->save();
+        return back()->with('success', 'User created successfully');
     }
 }

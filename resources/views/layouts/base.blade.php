@@ -23,6 +23,13 @@
                     <i class="fas fa-user"></i>
                     <span>Profile</span>
                 </a>
+                @if(auth()->user()->isSubAdmin())
+                    <a href="{{ route('subadmin.dashboard') }}" id="sub_admin" class="flex items-center space-x-3 p-3">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Manage Club</span>
+                    </a>
+                @endif
+                
                 <a href="{{ route('user.calendar')  }}" id="user_calendar" class="flex items-center space-x-3 p-3">
                     <i class="fas fa-calendar"></i>
                     <span>Schedule</span>
@@ -41,7 +48,7 @@
         </div>
 
         <!-- Main Content -->
-        <div class="flex overflow-auto w-full p-5">
+        <div class="flex overflow-auto w-full py-5">
             @yield('content')
         </div>
     </div>

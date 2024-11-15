@@ -34,12 +34,12 @@ class UserController extends Controller
     public function news()
     {
         $page = 'news';
-        $clubs = Club::with(['events' => function($query) {
+        $clubs = Auth::user()->clubs()->with(['events' => function($query) {
             $query->orderBy('event_date', 'desc')
-                  ->take(3); 
+              ->take(3); 
         }, 'news' => function($query) {
             $query->orderBy('date', 'desc')
-                  ->take(3);
+              ->take(3);
         }])->get();
 
         $joined_events = Auth::user()->events->pluck('id')->toArray();
@@ -90,6 +90,15 @@ class UserController extends Controller
         $user = Auth::user();
         
         if ($user->clubs->contains($club->id)) {
+            // Check if the user is joined in any event of the club
+            $clubEvents = $club->events->pluck('id')->toArray();
+            $userEvents = $user->events->pluck('id')->toArray();
+            $commonEvents = array_intersect($clubEvents, $userEvents);
+
+            if (!empty($commonEvents)) {
+            return back()->with('error', 'You cannot leave the club while you are joined in one of its events.');
+            }
+
             $user->clubs()->detach($club->id);
             return back()->with('success', 'Successfully left the club!');
         }
@@ -100,6 +109,11 @@ class UserController extends Controller
     public function joinEvent(Event $event)
     {
         $user = Auth::user();
+        $club = $event->club; // Assuming Event model has a 'club' relationship
+        
+        if (!$user->clubs->contains($club->id)) {
+            return back()->with('error', 'You must be a member of the club to join its events.');
+        }
         
         if (!$user->events->contains($event->id)) {
             $user->events()->attach($event->id);

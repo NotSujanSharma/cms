@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Club;
+
 
 class SubAdminController extends Controller
 {
@@ -10,7 +13,10 @@ class SubAdminController extends Controller
     // SubAdminController.php
     public function index()
     {
-        return view('subadmin.dashboard');
+        $page="sub_admin";
+        $subadminclub = Auth::user()->subAdminClub->name;
+        dd($subadminclub);
+        return view('subadmin.dashboard',compact('page'));
     }
 
 

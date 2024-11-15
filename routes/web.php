@@ -16,33 +16,34 @@ Route::middleware('auth')->group(function () {
         $user = Auth::user();
         if ($user->isAdmin()) {
             return redirect()->route('admin.dashboard');
-        } elseif ($user->isSubAdmin()) {
-            return redirect()->route('subadmin.dashboard');
-        } elseif ($user->isUser()) {
+        } elseif ($user->isSubAdmin() || $user->isUser()) {
             return redirect()->route('user.dashboard');
         }
     })->name('dashboard');
 });
 Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
-Route::get('/user/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
-
-
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
-    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
-    Route::post('/update/{user}', [AdminController::class, 'update'])->name('users.update');
-    Route::post('/delete/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
-    Route::post('/create-event', [AdminController::class, 'createEvent'])->name('event.create');
-
-
-});
+Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
 
 Route::middleware(['auth', 'role:subadmin'])->group(function () {
     Route::get('/subadmin', [SubAdminController::class, 'index'])->name('subadmin.dashboard');
 });
 
-Route::middleware(['auth', 'role:user'])->group(function () {
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
+    Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('/events', [AdminController::class, 'events'])->name('admin.events');
+    Route::post('/user/create', [AdminController::class, 'createUser'])->name('users.create');
+    Route::post('/user/update/{user}', [AdminController::class, 'update'])->name('users.update');
+    Route::post('/user/delete/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
+    Route::post('/event/update/{event}', [AdminController::class, 'updateEvent'])->name('event.update');
+    Route::post('/event/delete/{event}', [AdminController::class, 'destroyEvent'])->name('event.destroy');
+    Route::post('/create-event', [AdminController::class, 'createEvent'])->name('event.create');
+
+
+});
+
+Route::middleware(['auth', 'role:subadmin,user'])->group(function () {
     Route::get('/user', [UserController::class, 'index'])->name('user.dashboard');
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::get('news', [UserController::class, 'news'])->name('user.news');
@@ -56,6 +57,7 @@ Route::middleware(['auth', 'role:user'])->group(function () {
     Route::get('/edit-profile', [UserController::class, 'editProfile'])->name('user.edit');
     Route::post('/update-profile', [UserController::class, 'updateProfile'])->name('user.update');
 });
+
 
 Route::post('/logout', function () {
     Auth::logout();

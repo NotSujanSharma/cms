@@ -8,6 +8,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use App\Models\ClubSubAdmin;
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -33,6 +36,10 @@ class User extends Authenticatable
     {
         return $this->role === $role;
     }
+    public function hasAnyRole(array $roles): bool
+    {
+        return in_array($this->role, $roles);
+    }
     public function isAdmin(): bool
     {
         return $this->hasRole('admin');
@@ -57,6 +64,20 @@ class User extends Authenticatable
         return $this->belongsToMany(Event::class, 'event_user')
             ->withTimestamps();
     }
+
+    public function subAdminClub(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Club::class,
+            ClubSubAdmin::class,
+            'user_id', // Foreign key on club_subadmin table
+            'id', // Foreign key on clubs table (primary key)
+            'id', // Local key on users table (primary key)
+            'club_id' // Local key on club_subadmin table
+        );
+    }
+
+
 
     /**
      * The attributes that should be hidden for serialization.
