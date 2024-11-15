@@ -19,7 +19,8 @@
         
         <!-- your club-->
          <div class="mb-8">
-            <img src="https://media.istockphoto.com/id/1086352374/photo/minimal-work-space-creative-flat-lay-photo-of-workspace-desk-top-view-office-desk-with-laptop.jpg?s=612x612&w=0&k=20&c=JYBNQsgeO13lU1rq3kUWfD-W0Xii3sFyYzijvsntplY=" alt="Club Image" class="w-full rounded-lg h-full bg-gray-300 overflow-hidden">
+            <div class="w-full rounded-lg h-full bg-gray-300 overflow-hidden">
+            <h1>{{$club->name}}</h1>
          </div>
     </div>
     <div class="w-64 p-6 bg-gray-100 overflow-auto">

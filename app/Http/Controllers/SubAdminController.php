@@ -14,9 +14,9 @@ class SubAdminController extends Controller
     public function index()
     {
         $page="sub_admin";
-        $subadminclub = Auth::user()->subAdminClub->name;
-        dd($subadminclub);
-        return view('subadmin.dashboard',compact('page'));
+        $subadminclub = Auth::user()->subAdminClub;
+        $club = $subadminclub;
+        return view('subadmin.dashboard',compact('page', 'club'));
     }
 
 
