@@ -34,16 +34,7 @@
             </div>
             @endif
         <h1 class="text-3xl font-bold mb-8">All Users</h1>
-        <div class="flex space-x-4">
-            <div class="relative">
-                <input type="text" placeholder="Search users" class="pl-8 pr-4 py-2 rounded-lg border">
-                <i class="fas fa-search absolute left-2 top-3 text-gray-400"></i>
-            </div>
-            <button class="flex items-center space-x-2 border px-4 py-2 rounded-lg">
-                <i class="fas fa-filter"></i>
-                <span>Filter</span>
-            </button>
-        </div>
+        
     </div>
     <div class="bg-white rounded-lg p-4">
         <table class="w-full">

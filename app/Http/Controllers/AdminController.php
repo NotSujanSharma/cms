@@ -10,12 +10,13 @@ use App\Models\Event;
 
 class AdminController extends Controller
 {
+
     public function index()
     {
         $m_users = User::all();
         $user_count = User::count();
         $new_users = User::orderBy('created_at', 'desc')->take(5)->get();
-        $most_active_users = User::withCount('events')->orderBy('events_count', 'desc')->take(5)->get();
+        $most_active_users = User::withCount('events')->orderBy('events_count', 'desc')->take(4)->get();
         $users = [
             'users' => $m_users,
             'user_count' => $user_count,
@@ -27,6 +28,20 @@ class AdminController extends Controller
 
         $page="admin_dashboard";
         return view('admin.dashboard' , compact('page','users','active_clubs','all_clubs'));
+    }
+
+    public function profile()
+    {
+        $page = 'profile';
+        $user = auth()->user();
+        return view('admin.profile', compact('user','page'));
+    }
+
+    public function edit()
+    {
+        $page = 'profile';
+        $user = auth()->user();
+        return view('admin.edit-profile', compact('user','page'));
     }
 
     public function users()

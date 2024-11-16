@@ -48,7 +48,7 @@
                         <!-- display first event of club -->
                                 @if($club->events->count() > 0)
                                 @php
-                                    $event = $club->events->first();
+        $event = $club->events->first();
                                 @endphp
                                 <div class="bg-blue-100 p-4 rounded-xl flex justify-between items-center">
                                     <div class="flex items-center space-x-4">
@@ -84,10 +84,33 @@
         <div class="w-64 p-6 bg-gray-100 overflow-auto">
             <div class="flex items-center justify-between mb-6">
                 <div class="flex items-center space-x-2">
-                    <i class="fab fa-snapchat text-xl"></i>
-                    <i class="fas fa-comment text-xl"></i>
+                    <div class="relative">
+                        <a href="{{ route('notifications.index') }}" class="text-gray-500 hover:text-gray-700">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                                </path>
+                            </svg>
+                            @if(auth()->user()->unreadNotifications->count() > 0)
+                                <span
+                                    class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+                                    {{ auth()->user()->unreadNotifications->count() }}
+                                </span>
+                            @endif
+                        </a>
+                    </div>
                 </div>
-                <div class="font-bold">{{ Auth::user()->name }}</div>
+                <div>
+                    <div class="font-bold">
+                        {{ Auth::user()->name }}
+                    </div>
+                    @if(auth()->user()->isSubAdmin())
+                    <div class="text-xs">
+                        Sub Admin
+                    </div>
+                    @endif
+
+                </div>
             </div>
             
             <div class="mb-6">

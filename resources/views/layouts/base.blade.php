@@ -57,10 +57,12 @@
             @yield('content')
         </div>
     </div>
-
+    
+    
     <script>
         // Add a highlight effect to the current page link
         document.getElementById('{{$page}}').classList.add('bg-white', 'text-[#262626]', 'rounded-xl');
     </script>
+    
 </body>
 </html>

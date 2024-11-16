@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\SubAdminController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\NotificationController;
 
 //Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::middleware('guest')->group(function () {
@@ -25,6 +26,13 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
 
 Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dashboard');
 
+// routes/web.php
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead'])->name('notifications.markAsRead');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead'])->name('notifications.markAllAsRead');
+});
+
 Route::middleware(['auth', 'role:subadmin'])->group(function () {
     Route::get('/subadmin', [SubAdminController::class, 'index'])->name('subadmin.dashboard');
     Route::post('/subadmin/event/update/{event}', [SubAdminController::class, 'updateEvent'])->name('subadmin.event.update');
@@ -36,6 +44,8 @@ Route::middleware(['auth', 'role:subadmin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
+    Route::get('/admin/edit-profile', [AdminController::class, 'edit'])->name('admin.edit');
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
     Route::get('/events', [AdminController::class, 'events'])->name('admin.events');

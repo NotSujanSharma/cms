@@ -63,16 +63,7 @@
         <div class="mb-8">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xl font-bold">User Activity</h3>
-                <div class="flex space-x-4">
-                    <div class="relative">
-                        <input type="text" placeholder="Search users" class="pl-8 pr-4 py-2 rounded-lg border">
-                        <i class="fas fa-search absolute left-2 top-3 text-gray-400"></i>
-                    </div>
-                    <button class="flex items-center space-x-2 border px-4 py-2 rounded-lg">
-                        <i class="fas fa-filter"></i>
-                        <span>Filter</span>
-                    </button>
-                </div>
+
             </div>
 
             <!-- User Activity Table -->
@@ -87,68 +78,27 @@
                     </thead>
                     <tbody>
                         <!-- Table rows would be dynamically generated -->
-                        <tr class="border-t">
-                            <td class="py-3 flex items-center space-x-2">
-                                <img src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full">
-                                <span>Bluenose</span>
-                            </td>
-                            <td>
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-24 bg-gray-200 h-2 rounded-full">
-                                        <div class="w-2/5 bg-gray-600 h-2 rounded-full"></div>
+                        @foreach ($users['most_active_users'] as $user)
+                            <tr class="border-t">
+                                <td class="py-3 flex items-center space-x-2">
+                                    <img src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full">
+                                    <span>{{$user->name}}</span>
+                                </td>
+                                <td>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-24 bg-gray-200 h-2 rounded-full">
+                                            <div class="w-2/5 bg-gray-600 h-2 rounded-full"></div>
+                                        </div>
+                                        <span>{{ round(($user->clubs->count() / 5) * 100, 2) }}%</span>
+                                        
                                     </div>
-                                    <span>40%</span>
-                                    <span class="text-green-500">↑4%</span>
-                                </div>
-                            </td>
-                            <td>Coding</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-3 flex items-center space-x-2">
-                                <img src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full">
-                                <span>Bluenose</span>
-                            </td>
-                            <td>
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-24 bg-gray-200 h-2 rounded-full">
-                                        <div class="w-2/5 bg-gray-600 h-2 rounded-full"></div>
-                                    </div>
-                                    <span>40%</span>
-                                    <span class="text-green-500">↑4%</span>
-                                </div>
-                            </td>
-                            <td>Coding</td>
-                        </tr>
-                        <tr class="border-t">
-                            <td class="py-3 flex items-center space-x-2">
-                                <img src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full">
-                                <span>Bluenose</span>
-                            </td>
-                            <td>
-                                <div class="flex items-center space-x-2">
-                                    <div class="w-24 bg-gray-200 h-2 rounded-full">
-                                        <div class="w-2/5 bg-gray-600 h-2 rounded-full"></div>
-                                    </div>
-                                    <span>40%</span>
-                                    <span class="text-green-500">↑4%</span>
-                                </div>
-                            </td>
-                            <td>Coding</td>
-                        </tr>
-                        <!-- Add more rows as needed -->
+                                </td>
+                                <td>{{$user->clubs->count()}}</td>
+                            </tr>
+                        @endforeach
+
                     </tbody>
                 </table>
-
-                <!-- Pagination -->
-                <div class="flex justify-between items-center mt-4">
-                    <button class="text-gray-600">Previous page</button>
-                    <div class="flex space-x-2">
-                        <button class="w-8 h-8 rounded-full bg-gray-200">1</button>
-                        <button class="w-8 h-8 rounded-full">2</button>
-                        <!-- Add more page numbers -->
-                    </div>
-                    <button class="text-gray-600">Next page</button>
-                </div>
             </div>
         </div>
     </div>
@@ -157,14 +107,29 @@
     <div class="w-64 flex-2 p-6">
         <div class="flex flex-col items-center space-x-4 mb-6">
             <div class="flex flex-row gap-7 mb-6">
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-2 cursor-pointer"
+                    onclick="window.location.href='{{route('admin.profile')}}'">
                     <img src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full">
                     <div>
                         <div class="font-semibold">{{Auth::user()->name}}</div>
                         <div class="text-sm text-gray-500">Admin</div>
                     </div>
                 </div>
-                <i class="fas fa-bell text-xl"></i>
+                <div class="relative">
+                    <a href="{{ route('notifications.index') }}" class="text-gray-500 hover:text-gray-700">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
+                            </path>
+                        </svg>
+                        @if(auth()->user()->unreadNotifications->count() > 0)
+                            <span
+                                class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/2 -translate-y-1/2 bg-red-500 rounded-full">
+                                {{ auth()->user()->unreadNotifications->count() }}
+                            </span>
+                        @endif
+                    </a>
+                </div>
             </div>
             <div class="flex flex-row gap-1">
                 <button class="bg-[#B4CD93] w-max text-sm px-3 py-2 rounded-lg" @click="showCreateModal = true; ">Create
@@ -290,15 +255,16 @@
         </div>
     </div>
     <div x-cloak x-on:keydown.escape.prevent.stop="show = false" class="relative z-50" x-show="showUserCreationModal">
-    
+
         <div x-show="showUserCreationModal" x-cloak class="fixed inset-0 bg-black/50" aria-hidden="true"
             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
-    
+
         <div x-show="showUserCreationModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
             <div class="min-h-screen px-4 flex items-center justify-center">
-                <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md" @click.away="showUserCreationModal = false">
+                <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md"
+                    @click.away="showUserCreationModal = false">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-medium">Create User</h3>
                         <button @click="showUserCreationModal = false" class="text-gray-400 hover:text-gray-600">
@@ -308,7 +274,7 @@
                             </svg>
                         </button>
                     </div>
-    
+
                     <form method="POST" action="" @submit.prevent="createUser()" id="createUserForm">
                         @csrf
                         @method('POST')
@@ -339,10 +305,10 @@
                                 <label class="block text-sm font-medium text-gray-700">Password</label>
                                 <input type="password" x-model="userPassword" name="password"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-    
+
                             </div>
                         </div>
-    
+
                         <div class="mt-6 flex justify-end space-x-3">
                             <button type="button" @click="showUserCreationModal = false"
                                 class="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-50">

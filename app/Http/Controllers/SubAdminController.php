@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Notifications\EventCreatedNotification;
+use App\Notifications\EventDeletedNotification;
 use App\Models\News;
+use App\Models\User;
 use App\Models\Event;
 
 
@@ -27,6 +30,12 @@ class SubAdminController extends Controller
     public function destroyEvent(Event $event)
     {
         $event->delete();
+        $admin = User::where('role', 'admin')->first();
+        $subadmin = $event->club->subAdmin;
+        if ($admin) {
+            // Assuming you have a notification system in place
+            $admin->notify(new EventDeletedNotification($event, $subadmin));
+        }
         return redirect()->route('subadmin.dashboard')->with('success', 'Event deleted successfully');
     }
 
@@ -55,6 +64,13 @@ class SubAdminController extends Controller
 
         $event->fill($request->all());
         $event->save();
+        //send event created notification to admin 
+        $admin = User::where('role', 'admin')->first();
+        $subadmin = $event->club->subAdmin;
+        if ($admin) {
+            // Assuming you have a notification system in place
+            $admin->notify(new EventCreatedNotification($event, $subadmin));
+        }
         return back()->with('success', 'Event created successfully');
     }
 
