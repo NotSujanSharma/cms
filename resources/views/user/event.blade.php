@@ -1,25 +1,25 @@
 @extends('../layouts.base')
 @section('title')
-{{$news->headline}}
+    {{$event->name}}
 @endsection
 
 @section('content')
-<div class="flex flex-row w-full overflow-auto" x-data="{ 
+<div class="flex flex-row w-full overflow-auto"  x-data="{ 
     showEditModal: false, 
     showDeleteModal: false, 
-    newsId: null, 
-    newsHeadline: '', 
-    newsDescription: '', 
-    newsDate: '02/02/2025',
-    newsToDelete: null,
+    eventId: null, 
+    eventName: '', 
+    eventDescription: '', 
+    eventDate: '02/02/2025',
+    eventToDelete: null,
     
-    updateNews() {
-        document.getElementById('updateForm').action = `/subadmin/news/update/${this.newsId}`;
+    updateEvent() {
+        document.getElementById('updateForm').action = `/subadmin/event/update/${this.eventId}`;
         document.getElementById('updateForm').submit();
     },
     
-    deleteNews() {
-       document.getElementById('deleteForm').action = `/subadmin/news/delete/${this.newsId}`;
+    deleteEvent() {
+       document.getElementById('deleteForm').action = `/subadmin/event/delete/${this.eventId}`;
         document.getElementById('deleteForm').submit();
     }
 }" x-cloak>
@@ -42,25 +42,28 @@
             <div class="w-full p-6 bg rounded-lg h-50 bg-gray-300 overflow-hidden"
                 style="background-image: url('https://media.istockphoto.com/id/1086352374/photo/minimal-work-space-creative-flat-lay-photo-of-workspace-desk-top-view-office-desk-with-laptop.jpg?s=612x612&w=0&k=20&c=JYBNQsgeO13lU1rq3kUWfD-W0Xii3sFyYzijvsntplY='); background-size: cover; background-position: center;">
 
-                <h1 class="text-3xl text-white font-bold">{{$news->headline}}</h1>
+                <h1 class="text-3xl text-white font-bold">{{$event->name}}</h1>
                 <div class="text-white">
-                    {{$news->club->name}}
+                    {{$event->club->name}}
                 </div>
 
+                <!-- total members, events and news -->
                 <div class="flex flex-row justify-left gap-8 text-white mt-4">
                     <div class="flex flex-col">
-                        <h1 class="font-bold text-xs">{{ \Carbon\Carbon::parse($news->date)->format('Y/m/d') }}</h1>
+                        <h1 class="font-bold text-2xl">{{$event->participants->count()}}</h1>
+                        <p>Participants</p>
                     </div>
-
+                    
                 </div>
             </div>
         </div>
+        <!-- section for events and news -->
         <div class="flex flex-row space-x-4">
             <div class="flex-1">
                 <div class="bg-white p-6 rounded-lg shadow">
-                    <h1 class="font-bold text-2xl mb-4">{{$news->headline}}</h1>
+                    <h1 class="font-bold text-2xl mb-4">{{$event->name}}</h1>
                     <div class="space-y-4">
-                        {{$news->description}}
+                        {{$event->description}}
                     </div>
                 </div>
             </div>
@@ -70,28 +73,44 @@
         <div class="">
             <div class="flex flex-row justify-between">
 
-
-                <button @click="showEditModal = true; 
-                                                            newsId = '{{$news->id}}'; 
-                                                            newsHeadline = '{{$news->headline}}'; 
-                                                            newsDate = '{{ \Carbon\Carbon::parse($news->date)->format('Y-m-d') }}';
-                                                            newsDescription = '{{$news->description}}';"
-                    class="bg-blue-500 text-white p-2 rounded-lg block text-center mb-4">
-                    Edit News
-                </button>
-                <button @click="showDeleteModal = true; 
-                                                                        newsId = '{{$news->id}}'; 
-                                                                        newsHeadline = '{{$news->headline}}'; 
-                                                                        newsDate = '{{ \Carbon\Carbon::parse($news->date)->format('Y-m-d') }}';
-                                                                        newsDescription = '{{$news->description}}';"
-                    class="bg-red-500 text-white p-2 rounded-lg block text-center mb-4">
-                    Delete News
-                </button>
+            
+            <button @click="showEditModal = true; 
+                                                eventId = '{{$event->id}}'; 
+                                                eventName = '{{$event->name}}'; 
+                                                eventDate = '{{ \Carbon\Carbon::parse($event->event_date)->format('Y-m-d') }}';
+                                                eventClub = '{{$event->club_id}}';
+                                                eventDescription = '{{$event->description}}';"
+                class="bg-blue-500 text-white p-2 rounded-lg block text-center mb-4">
+                Edit Event
+            </button>
+            <button @click="showDeleteModal = true; 
+                                                            eventId = '{{$event->id}}'; 
+                                                            eventName = '{{$event->name}}'; 
+                                                            eventDate = '{{ \Carbon\Carbon::parse($event->event_date)->format('Y-m-d') }}';
+                                                            eventClub = '{{$event->club_id}}';
+                                                            eventDescription = '{{$event->description}}';"
+                class="bg-red-500 text-white p-2 rounded-lg block text-center mb-4">
+                Delete Event
+            </button>
             </div>
+            <h1 class="font-bold text-2xl mb-4">Participants</h1>
+            <div class="space-y-3 overflow-auto">
+                @foreach ($event->participants as $user)
+                    <div class="flex items
+                                -center justify-between bg-white p-3 rounded-lg shadow">
+                        <div>
+                            <h1 class="font-bold">{{$user->name}}</h1>
+                            <p class="text-sm text-gray-500">{{$user->email}}</p>
+                        </div>
 
+                    </div>
+                @endforeach
+
+            </div>
         </div>
 
     </div>
+
     <div x-cloak x-on:keydown.escape.prevent.stop="showEditModal = false" class="relative z-50" x-show="showEditModal">
     
         <div x-show="showEditModal" x-cloak class="fixed inset-0 bg-black/50" aria-hidden="true"
@@ -103,7 +122,7 @@
             <div class="min-h-screen px-4 flex items-center justify-center">
                 <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md" @click.away="showEditModal = false">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-medium">Edit News</h3>
+                        <h3 class="text-lg font-medium">Edit Event</h3>
                         <button @click="showEditModal = false" class="text-gray-400 hover:text-gray-600">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -112,26 +131,26 @@
                         </button>
                     </div>
     
-                    <form method="POST" action="" @submit.prevent="updateNews()" id="updateForm">
+                    <form method="POST" action="" @submit.prevent="updateEvent()" id="updateForm">
                         @csrf
                         @method('POST')
-                        <input type="hidden" name="id" x-model="newsId">
+                        <input type="hidden" name="event_id" x-model="eventId">
                         <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700">Headline</label>
-                                <input type="text" x-model="newsHeadline" name="headline"
+                                <label class="block text-sm font-medium text-gray-700">Name</label>
+                                <input type="text" x-model="eventName" name="name"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Date</label>
-                                <input type="date" x-model="newsDate" name="date"
+                                <input type="date" x-model="eventDate" name="event_date"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Description</label>
-                                <textarea x-model="newsDescription" name="description"
+                                <textarea x-model="eventDescription" name="description"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        </textarea>
+                                    </textarea>
                             </div>
                         </div>
     
@@ -170,7 +189,7 @@
                         </button>
                     </div>
     
-                    <p class="text-gray-600 mb-6">Are you sure you want to delete this News? This action cannot be undone.
+                    <p class="text-gray-600 mb-6">Are you sure you want to delete this event? This action cannot be undone.
                     </p>
     
                     <div class="flex justify-end space-x-3">
@@ -178,10 +197,10 @@
                             class="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-50">
                             Cancel
                         </button>
-                        <form method="post" action="" @submit.prevent="deleteNews()" id="deleteForm" class="inline">
+                        <form method="post" action="" @submit.prevent="deleteEvent()" id="deleteForm" class="inline">
                             @csrf
                             @method('post')
-                            <input type="hidden" name="id" x-model="newsToDelete">
+                            <input type="hidden" name="event_id" x-model="eventToDelete">
                             <button type="submit" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
                                 Delete
                             </button>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Club; 
 use App\Models\Event;
+use App\Models\News;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -43,8 +44,27 @@ class UserController extends Controller
         }])->get();
 
         $joined_events = Auth::user()->events->pluck('id')->toArray();
-        return view('user.news', compact('clubs','page','joined_events'));
+        return view('user.newsFeed', compact('clubs','page','joined_events'));
     }
+
+    public function event($event_id)
+    {
+        $page = 'event';
+        $event = Event::find($event_id);
+        $club = $event->club;
+        $is_member = Auth::user()->clubs->contains($club->id);
+        return view('user.event', compact('event','club','is_member','page'));
+    }
+
+    public function showNews($news_id)
+    {
+        $page = 'news_view';
+        $news = News::find($news_id);
+        $club = $news->club;
+        $is_member = Auth::user()->clubs->contains($club->id);
+        return view('user.news', compact('news','club','is_member','page'));
+    }
+
 
     public function calendar()
     {
@@ -55,6 +75,8 @@ class UserController extends Controller
         // $user_events = Event::whereIn('id', $joined_events)->get();
         return view('user.calendar', compact('events','page','user_events'));
     }
+
+
 
     
     public function club($club_id)

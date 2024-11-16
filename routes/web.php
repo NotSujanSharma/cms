@@ -27,6 +27,12 @@ Route::get('/user/dashboard', [UserController::class, 'index'])->name('user.dash
 
 Route::middleware(['auth', 'role:subadmin'])->group(function () {
     Route::get('/subadmin', [SubAdminController::class, 'index'])->name('subadmin.dashboard');
+    Route::post('/subadmin/event/update/{event}', [SubAdminController::class, 'updateEvent'])->name('subadmin.event.update');
+    Route::post('/subadmin/event/delete/{event}', [SubAdminController::class, 'destroyEvent'])->name('subadmin.event.destroy');
+    Route::post('/subadmin/news/update/{news}', [SubAdminController::class, 'updateNews'])->name('subadmin.news.update');
+    Route::post('/subadmin/news/delete/{news}', [SubAdminController::class, 'destroyNews'])->name('subadmin.news.destroy');
+    Route::post('/subadmin/event/create', [SubAdminController::class, 'createEvent'])->name('subadmin.event.create');
+    Route::post('/subadmin/news/create', [SubAdminController::class, 'createNews'])->name('subadmin.news.create');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -47,6 +53,8 @@ Route::middleware(['auth', 'role:subadmin,user'])->group(function () {
     Route::get('/user', [UserController::class, 'index'])->name('user.dashboard');
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
     Route::get('news', [UserController::class, 'news'])->name('user.news');
+    Route::get('/news/{news_id}', [UserController::class, 'showNews'])->name('news.show');
+    Route::get('/events/{event_id}', [UserController::class, 'event'])->name('event.show');
     Route::get('/clubs/{club_id}', [UserController::class, 'club'])->name('club.show');
     Route::get('/calendar', [UserController::class, 'calendar'])->name('user.calendar');
     
