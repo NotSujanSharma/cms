@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 use App\Notifications\ClubJoinNotification;
 use App\Notifications\ClubLeaveNotification;
 use App\Notifications\EventJoinNotification;
+use App\Notifications\EventLeaveNotification;
 use Illuminate\Http\Request;
 use App\Models\Club;
 use App\Models\Event;
 use App\Models\News;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -177,8 +180,14 @@ class UserController extends Controller
         $user = Auth::user();
 
         if ($user->events->contains($event->id)) {
-            $user->events()->detach($event->id);
-            return back()->with('success', 'Successfully left the event!');
+
+            $subadmin = $event->club->subAdmin;
+            if ($user) {
+                $subadmin->notify(new EventLeaveNotification($user, $event));
+            }
+
+
+            return back()->with('success', 'Requested to leave the event.');
         }
 
         return back()->with('error', 'You are not a member of this event.');
@@ -194,7 +203,19 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::user();
-        $user->update($request->all());
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'avatar' => ['nullable','image', 'max:7272'], 
+        ]);
+        if ($request->hasFile('avatar')) {
+            if ($user->avatar) {
+                Storage::delete($user->avatar);
+            }
+            $path = $request->file('avatar')->store('avatars', 'public');
+            $validated['avatar'] = $path;
+        }
+        $user->update($validated);
         return back()->with('success', 'Profile updated successfully!');
     }
 }

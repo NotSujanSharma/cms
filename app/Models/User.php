@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use App\Models\ClubSubAdmin;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
@@ -26,12 +27,21 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'avatar',
     ];
 
      protected $casts = [
         'role' => 'string',
     ];
+    public function getAvatarUrlAttribute()
+    {
+        if ($this->avatar) {
+            return Storage::url($this->avatar);
+        }
 
+        // Return default avatar if none is uploaded
+        return "https://ui-avatars.com/api/?name=" . urlencode($this->name);
+    }
     public function hasRole(string $role): bool
     {
         return $this->role === $role;

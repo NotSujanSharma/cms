@@ -71,6 +71,7 @@
     </div>
     <div class="w-64 p-6 bg-gray-100 overflow-auto">
         <div class="">
+            @if(Auth::user()->role == 'subadmin')
             <div class="flex flex-row justify-between">
 
             
@@ -93,6 +94,7 @@
                 Delete Event
             </button>
             </div>
+            @endif
             <h1 class="font-bold text-2xl mb-4">Participants</h1>
             <div class="space-y-3 overflow-auto">
                 @foreach ($event->participants as $user)

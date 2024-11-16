@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\Club;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\MailMessage;
 
 class ClubJoinNotification extends Notification
 {
@@ -22,6 +23,17 @@ class ClubJoinNotification extends Notification
     public function via($notifiable)
     {
         return ['database'];
+    }
+
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+        //mail about user join
+        ->subject('New Club Join Notification')
+        ->line($this->user->name . ' has joined ' . $this->club->name)
+        ->action('View Club', url('/clubs/' . $this->club->id))
+        ->line('Thank you for using our application!');
+            
     }
 
     public function toArray($notifiable)

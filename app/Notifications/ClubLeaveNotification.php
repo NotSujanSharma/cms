@@ -4,6 +4,7 @@ namespace App\Notifications;
 use App\Models\User;
 use App\Models\Club;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 class ClubLeaveNotification extends Notification
@@ -22,6 +23,17 @@ class ClubLeaveNotification extends Notification
     public function via($notifiable)
     {
         return ['database'];
+    }
+
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+            //mail about user join
+            ->subject('Club Leave Notification')
+            ->line($this->user->name . ' has left ' . $this->club->name)
+            ->action('View Club', url('/clubs/' . $this->club->id))
+            ->line('Thank you for using our application!');
+
     }
 
     public function toArray($notifiable)

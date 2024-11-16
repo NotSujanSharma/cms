@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class EventJoinNotification extends Notification
+class EventLeaveNotification extends Notification
 {
     use Queueable;
 
@@ -29,8 +29,8 @@ class EventJoinNotification extends Notification
         $event = $this->event;
         return (new MailMessage)
             //mail about user join
-            ->subject('Event Join Notification')
-            ->line($this->user->name . ' has joined ' . $event->name)
+            ->subject('User wants to leave the event')
+            ->line($this->user->name . ' wants to leave ' . $event->name)
             ->action('View Event', url('/events/' . $event->id))
             ->line('Thank you for using our application!');
     }
@@ -38,10 +38,11 @@ class EventJoinNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'message' => $this->user->name . ' has joined ' . $this->event->name,
+            'message' => $this->user->name . ' has left ' . $this->event->name,
             'user_id' => $this->user->id,
-            'club_id' => $this->event->id,
-            'type' => 'event_join'
+            'event_id' => $this->event->id,
+            'status' => 'pending',
+            'type' => 'event_leave'
         ];
     }
 }

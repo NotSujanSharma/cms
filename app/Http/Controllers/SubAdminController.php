@@ -9,6 +9,7 @@ use App\Notifications\EventCreatedNotification;
 use App\Notifications\EventDeletedNotification;
 use App\Models\News;
 use App\Models\User;
+use App\Models\Notification;
 use App\Models\Event;
 
 
@@ -81,6 +82,30 @@ class SubAdminController extends Controller
         $news->save();
         return back()->with('success', 'News created successfully');
     }
+
+    public function approveLeaveEvent(Request $request)
+    {
+        $event = Event::find($request->event_id);
+        $user = User::find($request->user_id);
+        $notification = Notification::find($request->notification_id);
+
+        if ($user->events->contains($event->id)) {
+            $event->participants()->detach($user->id);
+            $notification->delete();
+        }
+        else {
+            $notification->delete();
+        }
+        return back()->with('success', 'User leave event approved successfully');
+    }
+    public function denyLeaveEvent(Request $request)
+    {
+        $notification = Notification::find($request->notification_id);
+        $notification->delete();
+        return back()->with('success', 'User leave event denied successfully');
+    }
+    
+
 
 
 

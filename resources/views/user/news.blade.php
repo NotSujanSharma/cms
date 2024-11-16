@@ -66,7 +66,9 @@
             </div>
         </div>
     </div>
+    @if(Auth::user()->role == 'subadmin')
     <div class="w-64 p-6 bg-gray-100 overflow-auto">
+
         <div class="">
             <div class="flex flex-row justify-between">
 
@@ -92,6 +94,7 @@
         </div>
 
     </div>
+    @endif
     <div x-cloak x-on:keydown.escape.prevent.stop="showEditModal = false" class="relative z-50" x-show="showEditModal">
     
         <div x-show="showEditModal" x-cloak class="fixed inset-0 bg-black/50" aria-hidden="true"

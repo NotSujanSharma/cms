@@ -81,7 +81,7 @@
                         @foreach ($users['most_active_users'] as $user)
                             <tr class="border-t">
                                 <td class="py-3 flex items-center space-x-2">
-                                    <img src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full">
+                                    <img src="{{ $user->avatar_url }}" class="w-8 h-8 rounded-full">
                                     <span>{{$user->name}}</span>
                                 </td>
                                 <td>
@@ -90,7 +90,7 @@
                                             <div class="w-2/5 bg-gray-600 h-2 rounded-full"></div>
                                         </div>
                                         <span>{{ round(($user->clubs->count() / 5) * 100, 2) }}%</span>
-                                        
+
                                     </div>
                                 </td>
                                 <td>{{$user->clubs->count()}}</td>
@@ -109,7 +109,7 @@
             <div class="flex flex-row gap-7 mb-6">
                 <div class="flex items-center space-x-2 cursor-pointer"
                     onclick="window.location.href='{{route('admin.profile')}}'">
-                    <img src="https://via.placeholder.com/40" class="w-10 h-10 rounded-full">
+                    <img src="{{ auth()->user()->avatar_url }}" class="w-10 h-10 rounded-full">
                     <div>
                         <div class="font-semibold">{{Auth::user()->name}}</div>
                         <div class="text-sm text-gray-500">Admin</div>
@@ -143,11 +143,9 @@
             <div class="space-y-3 overflow-auto h-[120px]">
                 @foreach($users['most_active_users'] as $user)
                     <div class="flex items-center space-x-2">
-                        @if(($user->profile_photo_path) && ($user->profile_photo_path != 'null'))
-                            <img src="{{asset('storage/' . $user->profile_photo_path)}}" class="w-8 h-8 rounded-full">
-                        @else
-                            <img src="https://via.placeholder.com/32" class="w-8 h-8 rounded-full">
-                        @endif
+                        
+                            <img src="{{$user->avatar_url }}" class="w-8 h-8 rounded-full">
+                        
                         <span>{{$user->name}}</span>
                     </div>
                 @endforeach
@@ -275,11 +273,22 @@
                         </button>
                     </div>
 
-                    <form method="POST" action="" @submit.prevent="createUser()" id="createUserForm">
+                    <form method="POST"  enctype="multipart/form-data" action="" @submit.prevent="createUser()" id="createUserForm">
                         @csrf
                         @method('POST')
                         <input type="hidden" name="user_id" x-model="userId">
                         <div class="space-y-4">
+                            <div class="flex-1">
+                                <input type="file" name="avatar" id="avatar" accept="image/*" class="block w-full text-sm text-gray-500
+                                                                                                  file:mr-4 file:py-2 file:px-4
+                                                                                                  file:rounded-full file:border-0
+                                                                                                  file:text-sm file:font-semibold
+                                                                                                  file:bg-blue-50 file:text-blue-700
+                                                                                                  hover:file:bg-blue-100">
+                                @error('avatar')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Name</label>
                                 <input type="text" x-model="userName" name="name"

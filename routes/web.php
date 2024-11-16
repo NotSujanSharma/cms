@@ -41,6 +41,8 @@ Route::middleware(['auth', 'role:subadmin'])->group(function () {
     Route::post('/subadmin/news/delete/{news}', [SubAdminController::class, 'destroyNews'])->name('subadmin.news.destroy');
     Route::post('/subadmin/event/create', [SubAdminController::class, 'createEvent'])->name('subadmin.event.create');
     Route::post('/subadmin/news/create', [SubAdminController::class, 'createNews'])->name('subadmin.news.create');
+    Route::post('/subadmin/approveLeaveEvent/', [SubAdminController::class, 'approveLeaveEvent'])->name('subadmin.event.approveLeave');
+    Route::post('/subadmin/denyLeaveEvent/', [SubAdminController::class, 'denyLeaveEvent'])->name('subadmin.event.denyLeave');
 });
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -67,7 +69,7 @@ Route::middleware(['auth', 'role:subadmin,user'])->group(function () {
     Route::get('/events/{event_id}', [UserController::class, 'event'])->name('event.show');
     Route::get('/clubs/{club_id}', [UserController::class, 'club'])->name('club.show');
     Route::get('/calendar', [UserController::class, 'calendar'])->name('user.calendar');
-    
+
     Route::post('/clubs/{club}/join', [UserController::class, 'joinClub'])->name('club.join');
     Route::post('/clubs/{club}/leave', [UserController::class, 'leaveClub'])->name('club.leave');
     Route::post('/events/{event}/join', [UserController::class, 'joinEvent'])->name('event.join');

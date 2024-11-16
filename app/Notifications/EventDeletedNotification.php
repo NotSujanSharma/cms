@@ -24,6 +24,16 @@ class EventDeletedNotification extends Notification
     {
         return ['database'];
     }
+    public function toMail($notifiable)
+    {
+        return (new MailMessage)
+            //mail about user join
+            ->subject('Event Deletion Notification')
+            ->line($this->subadmin->name . ' has deleted ' . $this->event->name .' event')
+            ->action('View event', url('/events/' . $this->event->id))
+            ->line('Thank you for using our application!');
+
+    }
 
     public function toArray($notifiable)
     {
