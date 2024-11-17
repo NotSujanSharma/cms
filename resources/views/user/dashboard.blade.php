@@ -114,17 +114,32 @@
             <div class="mb-6">
                 <h3 class="font-bold mb-4">Latest Activity</h3>
                 <div class="space-y-4">
-                     @if($club->news->count() > 0)
-                         @foreach($club->news as $news)
-                            <div class="bg-white p-4 rounded-xl shadow-md cursor-pointer" onclick="window.location.href='{{route('news.show', $news->id)}}'">
-                                <div class="font-bold mb-2">{{$news->headline}}</div>
-                                <img src="{{ $news->picture_url }}" alt="{{ $club->name }}" class="w-full h-40 rounded-xl object-cover">
-                                <p class="text-sm">
-                                    {{$news->description}}
-                                </p>
-                            </div>
-                        @endforeach
-                    @endif
+                    @php
+                        $newsCount = 0;
+                    @endphp
+                    @foreach ($clubs as $club)
+                        @if($club->news->count() > 0)
+                            @foreach($club->news as $news)
+                                @if($newsCount < 5)
+                                    <div class="bg-white p-4 rounded-xl shadow-md cursor-pointer" onclick="window.location.href='{{route('news.show', $news->id)}}'">
+                                        <div class="font-bold mb-2">{{$news->headline}}</div>
+                                        <img src="{{ $news->picture_url }}" alt="{{ $club->name }}" class="w-full h-40 rounded-xl object-cover">
+                                        <p class="text-sm">
+                                            {{$news->description}}
+                                        </p>
+                                    </div>
+                                    @php
+                                        $newsCount++;
+                                    @endphp
+                                @else
+                                    @break
+                                @endif
+                            @endforeach
+                        @endif
+                        @if($newsCount >= 5)
+                            @break
+                        @endif
+                    @endforeach
                 </div>
             </div>
         </div>

@@ -21,7 +21,7 @@ class AdminController extends Controller
         $new_users = User::orderBy('created_at', 'desc')->take(5)->get();
         $most_active_users = User::withCount('events')->orderBy('events_count', 'desc')->take(4)->get();
         $subadmins = User::where('role', 'subadmin')->get();
-        
+
         $users = [
             'users' => $m_users,
             'user_count' => $user_count,
@@ -51,7 +51,12 @@ class AdminController extends Controller
         //don't 
 
 
+        $club->users()->detach();
         $club->delete();
+        // delete club user relationship
+
+
+
         return back()->with('success', 'Club deleted successfully with SubAdmin');
     }
 
@@ -155,7 +160,9 @@ class AdminController extends Controller
 
     public function destroy(User $user)
     {
+        $user->clubs()->detach();
         $user->delete();
+        // delete club user relationship
         return back()->with('success', 'User deleted successfully');
     }
 

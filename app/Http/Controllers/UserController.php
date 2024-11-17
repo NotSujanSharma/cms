@@ -106,6 +106,10 @@ class UserController extends Controller
     {
         $page = 'user_calendar';
         $events = Event::all();
+        // if no events return error
+        if ($events->isEmpty()) {
+            return back()->with('error', 'No events found');
+        }
         $joined_events = Auth::user()->events->pluck('id')->toArray();
         $user_events = $events;
         // $user_events = Event::whereIn('id', $joined_events)->get();
@@ -128,6 +132,9 @@ class UserController extends Controller
                     ->take(3);
             }
         ])->find($club_id);
+        if(!$club){
+            return back()->with('error', 'Club not found');
+        }
         $is_member = Auth::user()->clubs->contains($club_id);
         $joined_events = Auth::user()->events->pluck('id')->toArray();
         return view('user.club', compact('club', 'is_member', 'page', 'joined_events'));

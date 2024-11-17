@@ -40,12 +40,10 @@
                     <a href="{{ route('club.show', $club->id) }}">
 
                         <div class="rounded-xl overflow-hidden shadow-md cursor-pointer">
-                            @if($club->image_path != "null")
-                                <img src="{{ $club->image_path }}" alt="{{ $club->name }}" class="w-full h-40 object-cover">
-                            @else
-                                <img src="https://img.freepik.com/premium-vector/two-cute" alt="{{ $club->name }}"
+
+                                <img src="{{ $club->picture_url }}" alt="{{ $club->name }}"
                                     class="w-full h-40 object-cover">
-                            @endif
+
                             <div class="p-2 bg-white">
                                 <p class="text-sm">{{ $club->name }}</p>
                             </div>
