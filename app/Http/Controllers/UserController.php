@@ -64,16 +64,40 @@ class UserController extends Controller
         $page = 'event';
         $event = Event::find($event_id);
         $club = $event->club;
+
         $is_member = Auth::user()->clubs->contains($club->id);
+        if (Auth::user()->isUser()) {
+            if (!$is_member) {
+                return back()->with('error', 'You must be a member of the club to view the event.');
+            }
+        }
+
+        if (Auth::user()->isSubAdmin()) {
+            if ($club->subAdmin->id != Auth::user()->id) {
+                return back()->with('error', 'You are not authorized to view this event');
+            }
+        }
         return view('user.event', compact('event', 'club', 'is_member', 'page'));
     }
 
     public function showNews($news_id)
     {
         $page = 'news_view';
+
         $news = News::find($news_id);
         $club = $news->club;
+
         $is_member = Auth::user()->clubs->contains($club->id);
+        if (Auth::user()->isUser()) {
+            if (!$is_member) {
+                return back()->with('error', 'You must be a member of the club to view the news.');
+            }
+        }
+        if (Auth::user()->isSubAdmin()) {
+            if ($club->subAdmin->id != Auth::user()->id) {
+                return back()->with('error', 'You are not authorized to view this news');
+            }
+        }
         return view('user.news', compact('news', 'club', 'is_member', 'page'));
     }
 

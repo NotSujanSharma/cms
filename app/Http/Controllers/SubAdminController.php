@@ -27,11 +27,6 @@ class SubAdminController extends Controller
         if (!$subadminclub) {
             //return error subadmin.error page with error
             return view('subadmin.error', ['page' => 'sub_admin', 'error' => 'Sub-admin club not found']);
-            
-
-
-
-
         }
         $events = $subadminclub->events()->orderBy('event_date', 'desc')->get();
         $news = $subadminclub->news()->orderBy('date', 'desc')->get();
@@ -79,6 +74,8 @@ class SubAdminController extends Controller
     }
     public function updateNews(Request $request, News $news)
     {
+        // if user is not subadmin to club of news, return error
+        
         $validated = $request->validate([
             'headline' => ['required', 'string'],
             'date' => ['required'],
