@@ -22,13 +22,22 @@ class SubAdminController extends Controller
     // SubAdminController.php
     public function index()
     {
-        $page="sub_admin";
+        $page = "sub_admin";
         $subadminclub = Auth::user()->subAdminClub;
+        if (!$subadminclub) {
+            //return error subadmin.error page with error
+            return view('subadmin.error', ['page' => 'sub_admin', 'error' => 'Sub-admin club not found']);
+            
+
+
+
+
+        }
         $events = $subadminclub->events()->orderBy('event_date', 'desc')->get();
         $news = $subadminclub->news()->orderBy('date', 'desc')->get();
         $club = $subadminclub;
-        
-        return view('subadmin.dashboard',compact('page', 'club', 'events', 'news'));
+
+        return view('subadmin.dashboard', compact('page', 'club', 'events', 'news'));
     }
 
     public function destroyEvent(Event $event)
@@ -58,7 +67,7 @@ class SubAdminController extends Controller
             $path = $request->file('picture')->store('events', 'public');
             $validated['picture'] = $path;
         }
-        
+
         $event->update($validated);
         return back()->with('success', 'Event updated successfully');
     }
@@ -154,8 +163,7 @@ class SubAdminController extends Controller
         if ($user->events->contains($event->id)) {
             $event->participants()->detach($user->id);
             $notification->delete();
-        }
-        else {
+        } else {
             $notification->delete();
         }
         return back()->with('success', 'User leave event approved successfully');
@@ -166,7 +174,7 @@ class SubAdminController extends Controller
         $notification->delete();
         return back()->with('success', 'User leave event denied successfully');
     }
-    
+
 
 
 

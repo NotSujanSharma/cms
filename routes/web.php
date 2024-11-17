@@ -52,6 +52,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/edit-profile', [AdminController::class, 'edit'])->name('admin.edit');
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/users', [AdminController::class, 'users'])->name('admin.users');
+    Route::get('/clubs', [AdminController::class, 'clubs'])->name('admin.clubs');
     Route::get('/events', [AdminController::class, 'events'])->name('admin.events');
     Route::post('/user/create', [AdminController::class, 'createUser'])->name('users.create');
     Route::post('/user/update/{user}', [AdminController::class, 'update'])->name('users.update');
@@ -60,6 +61,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/event/delete/{event}', [AdminController::class, 'destroyEvent'])->name('event.destroy');
     Route::post('/create-event', [AdminController::class, 'createEvent'])->name('event.create');
     Route::post('/create-club', [AdminController::class, 'createClub'])->name('club.create');
+    Route::post('/club/delete/{club}', [AdminController::class, 'destroyClub'])->name('club.destroy');
+    Route::post('/club/update/{club}', [AdminController::class, 'updateClub'])->name('club.update');
 
 
 });

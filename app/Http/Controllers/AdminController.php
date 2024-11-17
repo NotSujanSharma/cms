@@ -21,6 +21,7 @@ class AdminController extends Controller
         $new_users = User::orderBy('created_at', 'desc')->take(5)->get();
         $most_active_users = User::withCount('events')->orderBy('events_count', 'desc')->take(4)->get();
         $subadmins = User::where('role', 'subadmin')->get();
+        
         $users = [
             'users' => $m_users,
             'user_count' => $user_count,
@@ -32,6 +33,26 @@ class AdminController extends Controller
 
         $page = "admin_dashboard";
         return view('admin.dashboard', compact('page', 'users', 'active_clubs', 'all_clubs', 'subadmins'));
+    }
+
+    public function clubs()
+    {
+        $clubs = Club::all();
+        $page = 'clubs';
+        $subadmins = User::where('role', 'subadmin')->get();
+
+        return view('admin.clubs', compact('clubs', 'page', 'subadmins'));
+    }
+
+
+
+    public function destroyClub(Club $club)
+    {
+        //don't 
+
+
+        $club->delete();
+        return back()->with('success', 'Club deleted successfully with SubAdmin');
     }
 
     public function createClub(Request $request)
@@ -59,6 +80,34 @@ class AdminController extends Controller
         ]);
 
         return back()->with('success', 'Club created successfully');
+    }
+
+    public function updateClub(Request $request, Club $club)
+    {
+        $validated = $request->validate([
+            'subadmin_id' => ['required', 'exists:users,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'image_url' => ['nullable', 'image', 'max:7272'],
+        ]);
+
+        $club->name = $validated['name'];
+
+        if ($request->hasFile('image_url')) {
+            if ($club->image_path) {
+                Storage::delete($club->image_path);
+            }
+            $path = $request->file('image_url')->store('clubs', 'public');
+            $club->image_path = $path;
+        }
+
+        $club->save();
+        ClubSubAdmin::updateOrCreate(
+            ['club_id' => $club->id],
+            ['user_id' => $validated['subadmin_id']]
+        );
+
+
+        return back()->with('success', 'Club updated successfully');
     }
 
     public function profile()

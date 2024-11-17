@@ -147,19 +147,17 @@
             </div>
         </div>
         <div class="bg-white rounded-md shadow-md shadow-gray-500/30 p-4 mb-6">
-            <h3 class="font-bold mb-4">Most Active Users</h3>
+            <h3 class="font-bold mb-4">Clubs</h3>
             <div class="space-y-3 overflow-auto h-[120px]">
-                @foreach($users['most_active_users'] as $user)
+                @foreach($all_clubs as $club)
                     <div class="flex items-center space-x-2">
-                        
-                            <img src="{{$user->avatar_url }}" class="w-8 h-8 rounded-full">
-                        
-                        <span>{{$user->name}}</span>
+                        <img src="{{ $club->picture_url }}" class="w-8 h-8 rounded-full">
+                        <span>{{$club->name}}</span>
                     </div>
                 @endforeach
             </div>
-            <button onClick="window.location.href='{{route('admin.users')}}'"
-                class="bg-[#B4CD93] w-full px-4 py-2 rounded-lg mt-4">View all users</button>
+            <button onClick="window.location.href='{{route('admin.clubs')}}'"
+                class="bg-[#B4CD93] w-full px-4 py-2 rounded-lg mt-4">View all Clubs</button>
         </div>
 
         <div class="bg-white rounded-md shadow-md shadow-gray-500/30 p-4">
