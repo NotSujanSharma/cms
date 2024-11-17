@@ -1,10 +1,10 @@
 @extends('../layouts.base')
 @section('title')
-    {{$event->name}}
+{{$event->name}}
 @endsection
 
 @section('content')
-<div class="flex flex-row w-full overflow-auto"  x-data="{ 
+<div class="flex flex-row w-full overflow-auto" x-data="{ 
     showEditModal: false, 
     showDeleteModal: false, 
     eventId: null, 
@@ -40,7 +40,7 @@
         <!-- your club-->
         <div class="mb-8">
             <div class="w-full p-6 bg rounded-lg h-50 bg-gray-300 overflow-hidden"
-                style="background-image: url('https://media.istockphoto.com/id/1086352374/photo/minimal-work-space-creative-flat-lay-photo-of-workspace-desk-top-view-office-desk-with-laptop.jpg?s=612x612&w=0&k=20&c=JYBNQsgeO13lU1rq3kUWfD-W0Xii3sFyYzijvsntplY='); background-size: cover; background-position: center;">
+                style="background-image: url('{{ $event->picture_url }}'); background-size: cover; background-position: center;">
 
                 <h1 class="text-3xl text-white font-bold">{{$event->name}}</h1>
                 <div class="text-white">
@@ -53,7 +53,7 @@
                         <h1 class="font-bold text-2xl">{{$event->participants->count()}}</h1>
                         <p>Participants</p>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -72,34 +72,34 @@
     <div class="w-64 p-6 bg-gray-100 overflow-auto">
         <div class="">
             @if(Auth::user()->role == 'subadmin')
-            <div class="flex flex-row justify-between">
+                <div class="flex flex-row justify-between">
 
-            
-            <button @click="showEditModal = true; 
-                                                eventId = '{{$event->id}}'; 
-                                                eventName = '{{$event->name}}'; 
-                                                eventDate = '{{ \Carbon\Carbon::parse($event->event_date)->format('Y-m-d') }}';
-                                                eventClub = '{{$event->club_id}}';
-                                                eventDescription = '{{$event->description}}';"
-                class="bg-blue-500 text-white p-2 rounded-lg block text-center mb-4">
-                Edit Event
-            </button>
-            <button @click="showDeleteModal = true; 
-                                                            eventId = '{{$event->id}}'; 
-                                                            eventName = '{{$event->name}}'; 
-                                                            eventDate = '{{ \Carbon\Carbon::parse($event->event_date)->format('Y-m-d') }}';
-                                                            eventClub = '{{$event->club_id}}';
-                                                            eventDescription = '{{$event->description}}';"
-                class="bg-red-500 text-white p-2 rounded-lg block text-center mb-4">
-                Delete Event
-            </button>
-            </div>
+
+                    <button @click="showEditModal = true; 
+                                                    eventId = '{{$event->id}}'; 
+                                                    eventName = '{{$event->name}}'; 
+                                                    eventDate = '{{ \Carbon\Carbon::parse($event->event_date)->format('Y-m-d') }}';
+                                                    eventClub = '{{$event->club_id}}';
+                                                    eventDescription = '{{$event->description}}';"
+                        class="bg-blue-500 text-white p-2 rounded-lg block text-center mb-4">
+                        Edit Event
+                    </button>
+                    <button @click="showDeleteModal = true; 
+                                                                eventId = '{{$event->id}}'; 
+                                                                eventName = '{{$event->name}}'; 
+                                                                eventDate = '{{ \Carbon\Carbon::parse($event->event_date)->format('Y-m-d') }}';
+                                                                eventClub = '{{$event->club_id}}';
+                                                                eventDescription = '{{$event->description}}';"
+                        class="bg-red-500 text-white p-2 rounded-lg block text-center mb-4">
+                        Delete Event
+                    </button>
+                </div>
             @endif
             <h1 class="font-bold text-2xl mb-4">Participants</h1>
             <div class="space-y-3 overflow-auto">
                 @foreach ($event->participants as $user)
                     <div class="flex items
-                                -center justify-between bg-white p-3 rounded-lg shadow">
+                                    -center justify-between bg-white p-3 rounded-lg shadow">
                         <div>
                             <h1 class="font-bold">{{$user->name}}</h1>
                             <p class="text-sm text-gray-500">{{$user->email}}</p>
@@ -114,12 +114,12 @@
     </div>
 
     <div x-cloak x-on:keydown.escape.prevent.stop="showEditModal = false" class="relative z-50" x-show="showEditModal">
-    
+
         <div x-show="showEditModal" x-cloak class="fixed inset-0 bg-black/50" aria-hidden="true"
             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
-    
+
         <div x-show="showEditModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
             <div class="min-h-screen px-4 flex items-center justify-center">
                 <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md" @click.away="showEditModal = false">
@@ -132,12 +132,25 @@
                             </svg>
                         </button>
                     </div>
-    
-                    <form method="POST" action="" @submit.prevent="updateEvent()" id="updateForm">
+
+                    <form method="POST" action="" enctype="multipart/form-data" @submit.prevent="updateEvent()"
+                        id="updateForm">
                         @csrf
                         @method('POST')
                         <input type="hidden" name="event_id" x-model="eventId">
                         <div class="space-y-4">
+                            <div class="flex-1">
+                                <input type="file" name="picture" id="picture" accept="image/*"
+                                    class="block w-full text-sm text-gray-500
+                                                                                                                      file:mr-4 file:py-2 file:px-4
+                                                                                                                      file:rounded-full file:border-0
+                                                                                                                      file:text-sm file:font-semibold
+                                                                                                                      file:bg-blue-50 file:text-blue-700
+                                                                                                                      hover:file:bg-blue-100">
+                                @error('picture')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Name</label>
                                 <input type="text" x-model="eventName" name="name"
@@ -155,7 +168,7 @@
                                     </textarea>
                             </div>
                         </div>
-    
+
                         <div class="mt-6 flex justify-end space-x-3">
                             <button type="button" @click="showEditModal = false"
                                 class="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-50">
@@ -170,14 +183,15 @@
             </div>
         </div>
     </div>
-    
-    <div x-cloak x-on:keydown.escape.prevent.stop="showDeleteModal = false" class="relative z-50" x-show="showDeleteModal">
-    
+
+    <div x-cloak x-on:keydown.escape.prevent.stop="showDeleteModal = false" class="relative z-50"
+        x-show="showDeleteModal">
+
         <div x-show="showDeleteModal" x-cloak class="fixed inset-0 bg-black/50" aria-hidden="true"
             x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
-    
+
         <div x-show="showDeleteModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
             <div class="min-h-screen px-4 flex items-center justify-center">
                 <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md" @click.away="showDeleteModal = false">
@@ -190,10 +204,11 @@
                             </svg>
                         </button>
                     </div>
-    
-                    <p class="text-gray-600 mb-6">Are you sure you want to delete this event? This action cannot be undone.
+
+                    <p class="text-gray-600 mb-6">Are you sure you want to delete this event? This action cannot be
+                        undone.
                     </p>
-    
+
                     <div class="flex justify-end space-x-3">
                         <button @click="showDeleteModal = false"
                             class="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-50">

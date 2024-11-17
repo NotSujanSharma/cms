@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 use App\Models\ClubSubAdmin;
+use Illuminate\Support\Facades\Storage;
 
 class Club extends Model
 {
@@ -18,6 +19,13 @@ class Club extends Model
     {
         return $this->belongsToMany(User::class, 'club_user')
             ->withTimestamps();
+    }
+    public function getPictureUrlAttribute()
+    {
+        if ($this->image_path) {
+            return Storage::url($this->image_path);
+        }
+        return "https://proconian.com/wp-content/uploads/2019/02/IMG_1552.jpg";
     }
 
     public function events(): HasMany

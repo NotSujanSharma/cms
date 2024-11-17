@@ -23,13 +23,11 @@
                 <div class="grid grid-cols-3 gap-4">
                     @foreach($clubs as $club)
                         <a href="{{ route('club.show', $club->id) }}" >
-                            
+
                         <div class="rounded-xl overflow-hidden shadow-md cursor-pointer" >
-                            @if($club->image_path != "null")
-                            <img src="{{ $club->image_path }}" alt="{{ $club->name }}" class="w-full h-40 object-cover">
-                            @else
-                            <img src="https://img.freepik.com/premium-vector/two-cute-boys-playing-football-park-vector-illustration_680433-293.jpg" alt="{{ $club->name }}" class="w-full h-40 object-cover">
-                            @endif
+
+                            <img src="{{ $club->picture_url }}" alt="{{ $club->name }}" class="w-full h-40 object-cover">
+
                         <div class="p-2 bg-white">
                             <p class="text-sm">{{ $club->name }}</p>
                         </div>
@@ -117,15 +115,15 @@
                 <h3 class="font-bold mb-4">Latest Activity</h3>
                 <div class="space-y-4">
                      @if($club->news->count() > 0)
-                     @foreach($club->news as $news)
-                    <div class="bg-white p-4 rounded-xl shadow-md cursor-pointer" onclick="window.location.href='{{route('news.show', $news->id)}}'">
-                        <div class="font-bold mb-2">{{$news->headline}}</div>
-                        <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/social-club-brand-logo-modern-playful-square-design-template-d9931e99bf9a9c9b9ee9ee3b1f5c3193_screen.jpg?ts=1590184618" alt="{{ $club->name }}" class="w-full h-40 rounded-xl object-cover">
-                        <p class="text-sm">
-                            {{$news->description}}
-                        </p>
-                    </div>
-                    @endforeach
+                         @foreach($club->news as $news)
+                            <div class="bg-white p-4 rounded-xl shadow-md cursor-pointer" onclick="window.location.href='{{route('news.show', $news->id)}}'">
+                                <div class="font-bold mb-2">{{$news->headline}}</div>
+                                <img src="{{ $news->picture_url }}" alt="{{ $club->name }}" class="w-full h-40 rounded-xl object-cover">
+                                <p class="text-sm">
+                                    {{$news->description}}
+                                </p>
+                            </div>
+                        @endforeach
                     @endif
                 </div>
             </div>

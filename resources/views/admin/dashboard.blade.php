@@ -3,6 +3,7 @@
 @section('content')
 <div class="flex flex-1 flex-row" x-data="{ 
     showCreateModal: false, 
+    showClubCreateModal: false,
     showUserCreationModal: false,
     eventName: '', 
     eventDescription: '', 
@@ -13,6 +14,8 @@
     userEmail: '',
     userRole: '',
     userPassword: '',
+    clubName: '',
+    clubSubAdmin: '',
     createUser() {
         document.getElementById('createUserForm').action = `/user/create`;
         document.getElementById('createUserForm').submit();
@@ -21,6 +24,10 @@
     createEvent() {
         document.getElementById('createEventForm').action = `/create-event`;
         document.getElementById('createEventForm').submit();
+    },
+    createClub() {
+        document.getElementById('createClubForm').action = `/create-club`;
+        document.getElementById('createClubForm').submit();
     },
     
     
@@ -57,6 +64,7 @@
             </div>
             <button onClick="window.location.href='{{route('admin.users')}}'"
                 class="bg-[#B4CD93] px-4 py-2 rounded-lg mt-4">View all Member</button>
+                <button @click="showClubCreateModal = true;" class="bg-blue-200 px-4 py-2 rounded-lg mt-4">Create Club</button>
         </div>
 
         <!-- User Activity Section -->
@@ -205,11 +213,23 @@
                         </button>
                     </div>
 
-                    <form method="POST" action="" @submit.prevent="createEvent()" id="createEventForm">
+                    <form method="POST" enctype="multipart/form-data"  action="" @submit.prevent="createEvent()" id="createEventForm">
                         @csrf
                         @method('POST')
                         <input type="hidden" name="user_id" x-model="userId">
+
                         <div class="space-y-4">
+                            <div class="flex-1">
+                                <input type="file" name="picture" id="picture" accept="image/*" class="block w-full text-sm text-gray-500
+                                                                                                          file:mr-4 file:py-2 file:px-4
+                                                                                                          file:rounded-full file:border-0
+                                                                                                          file:text-sm file:font-semibold
+                                                                                                          file:bg-blue-50 file:text-blue-700
+                                                                                                          hover:file:bg-blue-100">
+                                @error('picture')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Event Name</label>
                                 <input type="text" x-model="eventName" name="name"
@@ -325,6 +345,75 @@
                             </button>
                             <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
                                 Create User
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div x-cloak x-on:keydown.escape.prevent.stop="showClubCreateModal = false" class="relative z-50" x-show="showClubCreateModal">
+    
+        <div x-show="showClubCreateModal" x-cloak class="fixed inset-0 bg-black/50" aria-hidden="true"
+            x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100" x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"></div>
+    
+        <div x-show="showClubCreateModal" x-cloak class="fixed inset-0 z-50 overflow-y-auto">
+            <div class="min-h-screen px-4 flex items-center justify-center">
+                <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md" @click.away="showClubCreateModal = false">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-lg font-medium">Create Club</h3>
+                        <button @click="showClubCreateModal = false" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+    
+                    <form method="POST" enctype="multipart/form-data" action="" @submit.prevent="createClub()"
+                        id="createClubForm">
+                        @csrf
+                        @method('POST')
+                        <div class="space-y-4">
+                            <div class="flex-1">
+                                <input type="file" name="picture" id="picture" accept="image/*"
+                                    class="block w-full text-sm text-gray-500
+                                                                                                              file:mr-4 file:py-2 file:px-4
+                                                                                                              file:rounded-full file:border-0
+                                                                                                              file:text-sm file:font-semibold
+                                                                                                              file:bg-blue-50 file:text-blue-700
+                                                                                                              hover:file:bg-blue-100">
+                                @error('picture')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Club Name</label>
+                                <input type="text" x-model="clubName" name="name"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Sub Admin</label>
+                                <select name="subadmin_id" x-model="clubSubAdmin"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                                    <option value="">Select Sub Admin</option>
+                                    @foreach($subadmins as $user)
+                                        <option value="{{$user->id}}">{{$user->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+    
+                        <div class="mt-6 flex justify-end space-x-3">
+                            <button type="button" @click="showClubCreateModal = false"
+                                class="px-4 py-2 border rounded-md text-gray-600 hover:bg-gray-50">
+                                Cancel
+                            </button>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                                Create Club
                             </button>
                         </div>
                     </form>

@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Club;
 use App\Models\Event;
+use App\Models\ClubSubAdmin;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
@@ -19,6 +20,7 @@ class AdminController extends Controller
         $user_count = User::count();
         $new_users = User::orderBy('created_at', 'desc')->take(5)->get();
         $most_active_users = User::withCount('events')->orderBy('events_count', 'desc')->take(4)->get();
+        $subadmins = User::where('role', 'subadmin')->get();
         $users = [
             'users' => $m_users,
             'user_count' => $user_count,
@@ -29,7 +31,34 @@ class AdminController extends Controller
         $active_clubs = Club::withCount('events', 'users')->orderBy('events_count', 'desc')->take(3)->get();
 
         $page = "admin_dashboard";
-        return view('admin.dashboard', compact('page', 'users', 'active_clubs', 'all_clubs'));
+        return view('admin.dashboard', compact('page', 'users', 'active_clubs', 'all_clubs', 'subadmins'));
+    }
+
+    public function createClub(Request $request)
+    {
+        $validated = $request->validate([
+            'subadmin_id' => ['required', 'exists:users,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'picture' => ['nullable', 'image', 'max:7272'],
+        ]);
+
+        // Create the club first
+        $club = new Club();
+        $club->name = $validated['name'];
+
+        if ($request->hasFile('picture')) {
+            $path = $request->file('picture')->store('clubs', 'public');
+            $club->image_path = $path;
+        }
+
+        $club->save();
+
+        ClubSubAdmin::create([
+            'club_id' => $club->id,
+            'user_id' => $validated['subadmin_id']
+        ]);
+
+        return back()->with('success', 'Club created successfully');
     }
 
     public function profile()
@@ -96,8 +125,18 @@ class AdminController extends Controller
 
         // dd($request->all());
         $event = new Event();
-
-        $event->fill($request->all());
+        $validated = $request->validate([
+            'name' => ['required', 'string'],
+            'event_date' => ['required'],
+            'description' => ['nullable', 'string'],
+            'club_id' => ['required', 'exists:clubs,id'],
+            'picture' => ['nullable', 'image'],
+        ]);
+        if ($request->hasFile('picture')) {
+            $path = $request->file('picture')->store('events', 'public');
+            $validated['picture'] = $path;
+        }
+        $event->fill($validated);
         $event->save();
         return back()->with('success', 'Event created successfully');
     }
@@ -110,7 +149,24 @@ class AdminController extends Controller
 
     public function updateEvent(Request $request, Event $event)
     {
-        $event->update($request->all());
+        // dd($request->all());
+        $validated = $request->validate([
+            'event_id' => ['required', 'exists:events,id'],
+            'name' => ['required', 'string'],
+            'event_date' => ['required'],
+            'description' => ['nullable', 'string'],
+            'club_id' => ['required', 'exists:clubs,id'],
+            'picture' => ['nullable', 'image'],
+        ]);
+        if ($request->hasFile('picture')) {
+            if ($event->picture) {
+                Storage::delete($event->picture);
+            }
+            $path = $request->file('picture')->store('events', 'public');
+            $validated['picture'] = $path;
+        }
+
+        $event->update($validated);
         return back()->with('success', 'Event updated successfully');
     }
 

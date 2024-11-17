@@ -11,6 +11,10 @@
         [x-cloak] {
             display: none !important;
         }
+        select{
+            height:35px;
+            padding-left:10px !important;
+        }
     </style>
     @yield('extra_head', '')
 </head>

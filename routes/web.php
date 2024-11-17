@@ -9,7 +9,9 @@ use App\Http\Controllers\NotificationController;
 //Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::get('/signup', [AuthController::class, 'showSignupForm'])->name('signup');
     Route::post('/login', [AuthController::class, 'login'])->name('login.submit');
+    Route::post('/signup', [AuthController::class, 'signup'])->name('signup.submit');
 });
 
 Route::middleware('auth')->group(function () {
@@ -57,6 +59,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/event/update/{event}', [AdminController::class, 'updateEvent'])->name('event.update');
     Route::post('/event/delete/{event}', [AdminController::class, 'destroyEvent'])->name('event.destroy');
     Route::post('/create-event', [AdminController::class, 'createEvent'])->name('event.create');
+    Route::post('/create-club', [AdminController::class, 'createClub'])->name('club.create');
 
 
 });

@@ -40,7 +40,7 @@
         <!-- your club-->
         <div class="mb-8">
             <div class="w-full p-6 bg rounded-lg h-50 bg-gray-300 overflow-hidden"
-                style="background-image: url('https://media.istockphoto.com/id/1086352374/photo/minimal-work-space-creative-flat-lay-photo-of-workspace-desk-top-view-office-desk-with-laptop.jpg?s=612x612&w=0&k=20&c=JYBNQsgeO13lU1rq3kUWfD-W0Xii3sFyYzijvsntplY='); background-size: cover; background-position: center;">
+                style="background-image: url('{{ $news->picture_url }}'); background-size: cover; background-position: center;">
 
                 <h1 class="text-3xl text-white font-bold">{{$news->headline}}</h1>
                 <div class="text-white">
@@ -115,11 +115,23 @@
                         </button>
                     </div>
     
-                    <form method="POST" action="" @submit.prevent="updateNews()" id="updateForm">
+                    <form method="POST" enctype="multipart/form-data"  action="" @submit.prevent="updateNews()" id="updateForm">
                         @csrf
                         @method('POST')
                         <input type="hidden" name="id" x-model="newsId">
                         <div class="space-y-4">
+                            <div class="flex-1">
+                                <input type="file" name="picture" id="picture" accept="image/*"
+                                    class="block w-full text-sm text-gray-500
+                                                                                                                                                  file:mr-4 file:py-2 file:px-4
+                                                                                                                                                  file:rounded-full file:border-0
+                                                                                                                                                  file:text-sm file:font-semibold
+                                                                                                                                                  file:bg-blue-50 file:text-blue-700
+                                                                                                                                                  hover:file:bg-blue-100">
+                                @error('picture')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Headline</label>
                                 <input type="text" x-model="newsHeadline" name="headline"

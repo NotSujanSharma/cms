@@ -29,7 +29,7 @@
                             @foreach($club->news as $news)
                                 <div class="bg-white w-[300px] p-4 m-2 rounded-xl border shadow-md flex-shrink-0 cursor-pointer" onclick="window.location.href='{{route('news.show', $news->id)}}'">
                                     <div class="font-bold mb-2">{{ $news->headline }}</div>
-                                    <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/social-club-brand-logo-modern-playful-square-design-template-d9931e99bf9a9c9b9ee9ee3b1f5c3193_screen.jpg" 
+                                    <img src="{{ $news->picture_url }}" 
                                         alt="{{ $club->name }}" class="w-full h-40 rounded-xl object-cover">
                                     <p class="text-sm">{{$news->description}}</p>
                                 </div>
@@ -49,7 +49,7 @@
                             @foreach($club->events as $event)
                                 <div class="bg-white p-4 rounded-xl border flex flex-col gap-2 shadow-md">
                                     <div class="font-bold mb-2">{{ $event->name }}</div>
-                                    <img src="https://d1csarkz8obe9u.cloudfront.net/posterpreviews/social-club-brand-logo-modern-playful-square-design-template-d9931e99bf9a9c9b9ee9ee3b1f5c3193_screen.jpg" alt="{{ $club->name }}" class="w-full h-[300px] rounded-xl object-cover cursor-pointer" onclick="window.location.href='{{route('event.show', $event->id)}}'">
+                                    <img src="{{ $event->picture_url }}" alt="{{ $club->name }}" class="w-full h-[300px] rounded-xl object-cover cursor-pointer" onclick="window.location.href='{{route('event.show', $event->id)}}'">
                                     <div class="flex flex-row justify-between">
                                         <div>
                                             <div class="text-sm">{{ $event->description }}</div>

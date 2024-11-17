@@ -138,7 +138,7 @@
             <div class="space-y-3 overflow-auto">
                 @foreach ($club->users as $user)
                     <div class="flex items
-                                -center justify-between bg-white p-3 rounded-lg shadow">
+                                    -center justify-between bg-white p-3 rounded-lg shadow">
                         <div>
                             <h1 class="font-bold">{{$user->name}}</h1>
                             <p class="text-sm text-gray-500">{{$user->email}}</p>
@@ -173,10 +173,22 @@
                         </button>
                     </div>
 
-                    <form method="POST" action="" @submit.prevent="createEvent()" id="createEventForm">
+                    <form method="POST" enctype="multipart/form-data" action="" @submit.prevent="createEvent()"
+                        id="createEventForm">
                         @csrf
                         @method('POST')
                         <div class="space-y-4">
+                            <div class="flex-1">
+                                <input type="file" name="picture" id="picture" accept="image/*" class="block w-full text-sm text-gray-500
+                                                                                          file:mr-4 file:py-2 file:px-4
+                                                                                          file:rounded-full file:border-0
+                                                                                          file:text-sm file:font-semibold
+                                                                                          file:bg-blue-50 file:text-blue-700
+                                                                                          hover:file:bg-blue-100">
+                                @error('picture')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Name</label>
                                 <input type="text" x-model="eventName" name="name"
@@ -233,11 +245,25 @@
                         </button>
                     </div>
 
-                    <form method="POST" action="" @submit.prevent="postNews()" id="postNewsForm">
+                    <form method="POST" enctype="multipart/form-data"  action="" @submit.prevent="postNews()" id="postNewsForm">
                         @csrf
                         @method('POST')
                         <div class="space-y-4">
+                            
+                        <div class="flex-1">
+                            <input type="file" name="picture" id="picture" accept="image/*"
+                                class="block w-full text-sm text-gray-500
+                                                                                                                                              file:mr-4 file:py-2 file:px-4
+                                                                                                                                              file:rounded-full file:border-0
+                                                                                                                                              file:text-sm file:font-semibold
+                                                                                                                                              file:bg-blue-50 file:text-blue-700
+                                                                                                                                              hover:file:bg-blue-100">
+                            @error('picture')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
                             <div>
+
                                 <label class="block text-sm font-medium text-gray-700">Headline</label>
                                 <input type="text" x-model="newsHeadline" name="headline"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">

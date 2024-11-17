@@ -35,16 +35,7 @@
             </div>
             @endif
         <h1 class="text-3xl font-bold mb-8">All Events</h1>
-        <div class="flex space-x-4">
-            <div class="relative">
-                <input type="text" placeholder="Search events" class="pl-8 pr-4 py-2 rounded-lg border">
-                <i class="fas fa-search absolute left-2 top-3 text-gray-400"></i>
-            </div>
-            <button class="flex items-center space-x-2 border px-4 py-2 rounded-lg">
-                <i class="fas fa-filter"></i>
-                <span>Filter</span>
-            </button>
-        </div>
+        
     </div>
     <div class="bg-white rounded-lg p-4">
         <table class="w-full">
@@ -121,11 +112,23 @@
                         </button>
                     </div>
                     
-                    <form  method="POST" action=""  @submit.prevent="updateEvent()" id="updateForm">
+                    <form  method="POST" action="" enctype="multipart/form-data"  @submit.prevent="updateEvent()" id="updateForm">
                         @csrf
                         @method('POST')
                         <input type="hidden" name="event_id" x-model="eventId">
                         <div class="space-y-4">
+                            <div class="flex-1">
+                                <input type="file" name="picture" id="picture" accept="image/*"
+                                    class="block w-full text-sm text-gray-500
+                                                                                                                                                  file:mr-4 file:py-2 file:px-4
+                                                                                                                                                  file:rounded-full file:border-0
+                                                                                                                                                  file:text-sm file:font-semibold
+                                                                                                                                                  file:bg-blue-50 file:text-blue-700
+                                                                                                                                                  hover:file:bg-blue-100">
+                                @error('picture')
+                                    <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700">Name</label>
                                 <input type="text" x-model="eventName" name="name" 

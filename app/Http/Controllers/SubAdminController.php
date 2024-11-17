@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\EventCreatedNotification;
 use App\Notifications\EventDeletedNotification;
+use App\Notifications\NewsPostedNotification;
 use App\Models\News;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
+
 use App\Models\Notification;
 use App\Models\Event;
 
@@ -42,7 +45,21 @@ class SubAdminController extends Controller
 
     public function updateEvent(Request $request, Event $event)
     {
-        $event->update($request->all());
+        $validated = $request->validate([
+            'name' => ['required', 'string'],
+            'event_date' => ['required'],
+            'description' => ['nullable', 'string'],
+            'picture' => ['nullable', 'image'],
+        ]);
+        if ($request->hasFile('picture')) {
+            if ($event->picture) {
+                Storage::delete($event->picture);
+            }
+            $path = $request->file('picture')->store('events', 'public');
+            $validated['picture'] = $path;
+        }
+        
+        $event->update($validated);
         return back()->with('success', 'Event updated successfully');
     }
     public function destroyNews(News $news)
@@ -53,17 +70,40 @@ class SubAdminController extends Controller
     }
     public function updateNews(Request $request, News $news)
     {
-        $news->update($request->all());
+        $validated = $request->validate([
+            'headline' => ['required', 'string'],
+            'date' => ['required'],
+            'description' => ['nullable', 'string'],
+            'picture' => ['nullable', 'image'],
+        ]);
+        if ($request->hasFile('picture')) {
+            if ($news->picture) {
+                Storage::delete($news->picture);
+            }
+            $path = $request->file('picture')->store('news', 'public');
+            $validated['picture'] = $path;
+        }
+
+        $news->update($validated);
         return back()->with('success', 'News updated successfully');
     }
 
     public function createEvent(Request $request)
     {
 
-        // dd($request->all());
         $event = new Event();
-
-        $event->fill($request->all());
+        $validated = $request->validate([
+            'name' => ['required', 'string'],
+            'event_date' => ['required'],
+            'description' => ['nullable', 'string'],
+            'picture' => ['nullable', 'image'],
+            'club_id' => ['required', 'exists:clubs,id'],
+        ]);
+        if ($request->hasFile('picture')) {
+            $path = $request->file('picture')->store('events', 'public');
+            $validated['picture'] = $path;
+        }
+        $event->fill($validated);
         $event->save();
         //send event created notification to admin 
         $admin = User::where('role', 'admin')->first();
@@ -71,6 +111,12 @@ class SubAdminController extends Controller
         if ($admin) {
             // Assuming you have a notification system in place
             $admin->notify(new EventCreatedNotification($event, $subadmin));
+            //notify all users
+            $users = User::where('role', 'user')->get();
+            foreach ($users as $user) {
+                $user->notify(new EventCreatedNotification($event, $subadmin));
+            }
+
         }
         return back()->with('success', 'Event created successfully');
     }
@@ -78,8 +124,24 @@ class SubAdminController extends Controller
     public function createNews(Request $request)
     {
         $news = new News();
-        $news->fill($request->all());
+        $validated = $request->validate([
+            'headline' => ['required', 'string'],
+            'date' => ['required'],
+            'description' => ['nullable', 'string'],
+            'picture' => ['nullable', 'image'],
+            'club_id' => ['required', 'exists:clubs,id'],
+        ]);
+        if ($request->hasFile('picture')) {
+            $path = $request->file('picture')->store('news', 'public');
+            $validated['picture'] = $path;
+        }
+        $news->fill($validated);
         $news->save();
+        $users = User::where('role', 'user')->get();
+        $club = $news->club;
+        foreach ($users as $user) {
+            $user->notify(new NewsPostedNotification($news, $club));
+        }
         return back()->with('success', 'News created successfully');
     }
 
