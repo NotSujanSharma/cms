@@ -206,7 +206,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
-            'avatar' => ['nullable','image', 'max:7272'], 
+            'avatar' => ['nullable', 'image', 'max:7272'],
         ]);
         if ($request->hasFile('avatar')) {
             if ($user->avatar) {
