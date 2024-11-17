@@ -91,5 +91,5 @@ Route::post('/logout', function () {
 })->name('logout');
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
