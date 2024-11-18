@@ -41,8 +41,7 @@
 
                         <div class="rounded-xl overflow-hidden shadow-md cursor-pointer">
 
-                                <img src="{{ $club->picture_url }}" alt="{{ $club->name }}"
-                                    class="w-full h-40 object-cover">
+                            <img src="{{ $club->picture_url }}" alt="{{ $club->name }}" class="w-full h-40 object-cover">
 
                             <div class="p-2 bg-white">
                                 <p class="text-sm">{{ $club->name }}</p>
@@ -61,7 +60,7 @@
 
         @if($user->events->count() > 0)
             <div class="mb- ">
-                <h3 class="font-bold mb-4">Upcoming Events</h3>
+                <h3 class="font-bold mb-4">Joined Events</h3>
                 <div class="space-y-3">
                     @foreach($user->events as $event)
                         <div class="bg-blue-100 p-4 rounded-xl border flex flex-col gap-2 shadow-md">
@@ -76,7 +75,26 @@
                     @endforeach
                 </div>
             </div>
+        @else
+            <!-- upcoming events-->
+            <div class="mb- ">
+                <h3 class="font-bold mb-4">Upcoming Events</h3>
+                <div class="space-y-3">
+                    @foreach($events as $event)
+                        <div class="bg-blue-100 p-4 rounded-xl border flex flex-col gap-2 shadow-md">
+                            <div class="font-bold mb-2">{{ $event->name }}</div>
+                            <div class="text-sm">{{ $event->description }}</div>
+                            <div class="text-sm text-gray-500">{{ $event->event_date }}</div>
+                            <form action="{{ route('event.join', $event->id) }}" method="POST">
+                                @csrf
+                                <button class="bg-green-300 px-4 py-2 rounded-full text-sm">Join Event</button>
+                            </form>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         @endif
+
 
     </div>
 </div>

@@ -39,7 +39,10 @@ class UserController extends Controller
         $page = 'profile';
         $user = Auth::user();
         $user->load('clubs', 'events');
-        return view('user.profile', compact('user', 'page'));
+        $events = $user->clubs->map(function ($club) {
+            return $club->events;
+        })->flatten(); 
+        return view('user.profile', compact('user', 'page','events'));
     }
     public function news()
     {
